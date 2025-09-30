@@ -25,18 +25,6 @@
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
-            animation: slideUp 0.5s ease-out;
-        }
-        
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
         
         .header {
@@ -49,16 +37,32 @@
         h1 {
             font-size: 28px;
             font-weight: 700;
-            margin-bottom: 5px;
-        }
-        
-        .subtitle {
-            font-size: 14px;
-            opacity: 0.9;
         }
         
         .content {
             padding: 20px;
+        }
+        
+        .hole-header {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .hole-info {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .shot-number {
+            font-size: 16px;
+            color: #667eea;
+            font-weight: 600;
         }
         
         .input-group {
@@ -91,35 +95,34 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin-bottom: 15px;
         }
         
-        .wind-grid {
+        .result-btns {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
             margin-bottom: 15px;
         }
         
-        .wind-btn {
-            padding: 12px;
+        .result-btn {
+            padding: 15px;
             border: 2px solid #e0e0e0;
             background: white;
             color: #666;
             border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 24px;
             cursor: pointer;
             transition: all 0.3s;
         }
         
-        .wind-btn.active {
+        .result-btn.active {
+            border-color: #667eea;
             background: #667eea;
             color: white;
-            border-color: #667eea;
+            transform: scale(1.05);
         }
         
-        .add-btn {
+        .add-shot-btn {
             width: 100%;
             padding: 14px;
             background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
@@ -129,12 +132,37 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
-            margin-top: 10px;
+            margin-bottom: 10px;
         }
         
-        .add-btn:active {
-            transform: scale(0.98);
+        .finish-hole-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .current-shots {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .shot-item {
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #666;
         }
         
         .tabs {
@@ -154,7 +182,6 @@
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
         }
         
         .tab.active {
@@ -168,12 +195,6 @@
         
         .tab-content.active {
             display: block;
-            animation: fadeIn 0.3s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
         
         .stats-grid {
@@ -194,7 +215,6 @@
             font-size: 12px;
             color: #666;
             margin-bottom: 6px;
-            font-weight: 500;
         }
         
         .stat-value {
@@ -216,7 +236,7 @@
             background: white;
             border: 2px solid #333;
             border-radius: 8px;
-            overflow: hidden;
+            overflow-x: auto;
             margin-bottom: 15px;
         }
         
@@ -229,6 +249,7 @@
             gap: 2px;
             font-size: 11px;
             font-weight: 700;
+            min-width: 500px;
         }
         
         .scorecard-row {
@@ -237,6 +258,7 @@
             gap: 2px;
             border-bottom: 1px solid #ddd;
             font-size: 11px;
+            min-width: 500px;
         }
         
         .scorecard-cell {
@@ -245,57 +267,23 @@
             border-right: 1px solid #ddd;
         }
         
-        .scorecard-cell:last-child {
-            background: #f0f0f0;
-            font-weight: 700;
-        }
-        
         .records {
             max-height: 400px;
             overflow-y: auto;
         }
         
-        .record-item {
+        .hole-record {
             background: #f9f9f9;
             border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
         }
         
-        .record-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        
-        .record-number {
-            font-size: 12px;
-            color: #999;
-        }
-        
-        .record-score {
-            font-size: 18px;
+        .hole-record-header {
             font-weight: 700;
             color: #667eea;
-        }
-        
-        .record-details {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.6;
-        }
-        
-        .delete-btn {
-            padding: 6px 12px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 8px;
+            margin-bottom: 10px;
+            font-size: 16px;
         }
         
         .reset-btn {
@@ -311,18 +299,17 @@
             margin-top: 15px;
         }
         
-        .empty-message {
-            text-align: center;
-            color: #999;
-            padding: 40px 20px;
-            font-size: 15px;
-        }
-        
         .section-title {
             font-size: 16px;
             font-weight: 700;
             color: #333;
             margin: 20px 0 12px 0;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
         }
     </style>
 </head>
@@ -330,81 +317,71 @@
     <div class="container">
         <div class="header">
             <h1>⛳ ゴルフ統計</h1>
-            <div class="subtitle">詳細なスコア分析</div>
         </div>
         
         <div class="content">
-            <div class="input-group">
-                <label class="input-label">ホール番号</label>
-                <input type="number" id="hole" placeholder="1-18" min="1" max="18">
+            <div class="hole-header">
+                <div class="hole-info">ホール <span id="currentHole">1</span></div>
+                <div class="shot-number"><span id="shotCount">1</span>打目</div>
             </div>
             
-            <div class="input-group">
-                <label class="input-label">スコア</label>
-                <input type="number" id="score" placeholder="例: 4" min="1">
-            </div>
-            
-            <div class="input-row">
+            <div class="input-row" style="margin-bottom: 15px;">
                 <div class="input-group">
-                    <label class="input-label">残距離 (yd)</label>
-                    <input type="number" id="distance" placeholder="150" min="0" step="1">
+                    <label class="input-label">状況</label>
+                    <select id="situation">
+                        <option value="ティーグラウンド">ティーグラウンド</option>
+                        <option value="フェアウェイ">フェアウェイ</option>
+                        <option value="ラフ">ラフ</option>
+                        <option value="バンカー">バンカー</option>
+                        <option value="グリーン">グリーン</option>
+                    </select>
                 </div>
                 <div class="input-group">
                     <label class="input-label">番手</label>
                     <select id="club">
-                        <option value="">選択</option>
-                        <option value="DR">ドライバー</option>
+                        <option value="DR">DR</option>
                         <option value="3W">3W</option>
                         <option value="5W">5W</option>
-                        <option value="UT">ユーティリティ</option>
-                        <option value="3I">3番アイアン</option>
-                        <option value="4I">4番アイアン</option>
-                        <option value="5I">5番アイアン</option>
-                        <option value="6I">6番アイアン</option>
-                        <option value="7I">7番アイアン</option>
-                        <option value="8I">8番アイアン</option>
-                        <option value="9I">9番アイアン</option>
-                        <option value="PW">ピッチング</option>
-                        <option value="AW">アプローチ</option>
-                        <option value="SW">サンド</option>
-                        <option value="PT">パター</option>
+                        <option value="UT">UT</option>
+                        <option value="3I">3I</option>
+                        <option value="4I">4I</option>
+                        <option value="5I">5I</option>
+                        <option value="6I">6I</option>
+                        <option value="7I">7I</option>
+                        <option value="8I">8I</option>
+                        <option value="9I">9I</option>
+                        <option value="PW">PW</option>
+                        <option value="AW">AW</option>
+                        <option value="SW">SW</option>
+                        <option value="PT">PT</option>
                     </select>
                 </div>
             </div>
             
             <div class="input-group">
-                <label class="input-label">風向き</label>
-                <div class="wind-grid">
-                    <button type="button" class="wind-btn active" onclick="selectWind(this, '無風')">無風</button>
-                    <button type="button" class="wind-btn" onclick="selectWind(this, '北 ↑')">北 ↑</button>
-                    <button type="button" class="wind-btn" onclick="selectWind(this, '南 ↓')">南 ↓</button>
-                    <button type="button" class="wind-btn" onclick="selectWind(this, '東 →')">東 →</button>
-                    <button type="button" class="wind-btn" onclick="selectWind(this, '西 ←')">西 ←</button>
-                    <button type="button" class="wind-btn" onclick="selectWind(this, '強風')">強風</button>
-                </div>
+                <label class="input-label">距離</label>
+                <input type="number" id="distance" placeholder="150 (yd)" min="0" step="1">
             </div>
             
             <div class="input-group">
                 <label class="input-label">結果</label>
-                <select id="result">
-                    <option value="">選択</option>
-                    <option value="フェアウェイ">フェアウェイ</option>
-                    <option value="グリーン">グリーン</option>
-                    <option value="ラフ">ラフ</option>
-                    <option value="バンカー">バンカー</option>
-                    <option value="OB">OB</option>
-                    <option value="池">池</option>
-                    <option value="寄せワン">寄せワン</option>
-                    <option value="パーオン">パーオン</option>
-                </select>
+                <div class="result-btns">
+                    <button type="button" class="result-btn" onclick="selectResult(this, '◎')">◎</button>
+                    <button type="button" class="result-btn" onclick="selectResult(this, '○')">○</button>
+                    <button type="button" class="result-btn" onclick="selectResult(this, '△')">△</button>
+                    <button type="button" class="result-btn" onclick="selectResult(this, '×')">×</button>
+                </div>
             </div>
             
-            <button type="button" class="add-btn" onclick="addRecord()">➕ ショットを追加</button>
+            <div class="current-shots" id="currentShots" style="display: none;"></div>
+            
+            <button type="button" class="add-shot-btn" onclick="addShot()">➕ 打を追加</button>
+            <button type="button" class="finish-hole-btn" onclick="finishHole()">✓ ホール終了</button>
             
             <div class="tabs">
                 <button type="button" class="tab active" onclick="switchTab('scorecard')">📝 スコア表</button>
                 <button type="button" class="tab" onclick="switchTab('stats')">📊 統計</button>
-                <button type="button" class="tab" onclick="switchTab('records')">📋 履歴</button>
+                <button type="button" class="tab" onclick="switchTab('records')">📋 詳細</button>
             </div>
             
             <div id="scorecardTab" class="tab-content active">
@@ -467,73 +444,86 @@
     </div>
     
     <script>
-        let records = [];
-        let selectedWind = '無風';
+        let holes = [];
+        let currentHole = 1;
+        let currentShots = [];
+        let selectedResult = null;
         
-        function selectWind(btn, wind) {
-            selectedWind = wind;
-            document.querySelectorAll('.wind-btn').forEach(b => {
-                b.classList.remove('active');
-            });
+        function selectResult(btn, result) {
+            selectedResult = result;
+            document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
         
-        function addRecord() {
-            const hole = parseInt(document.getElementById('hole').value);
-            const score = parseInt(document.getElementById('score').value);
-            const distance = parseFloat(document.getElementById('distance').value);
+        function addShot() {
+            const situation = document.getElementById('situation').value;
             const club = document.getElementById('club').value;
-            const result = document.getElementById('result').value;
+            const distance = parseFloat(document.getElementById('distance').value);
             
-            if (!hole || !score || !distance || !club || !result) {
-                alert('全ての項目を入力してください');
+            if (!distance || !selectedResult) {
+                alert('距離と結果を入力してください');
                 return;
             }
             
-            if (hole < 1 || hole > 18) {
-                alert('ホール番号は1-18で入力してください');
-                return;
-            }
-            
-            records.push({ 
-                hole,
-                score, 
-                distance, 
-                club, 
-                wind: selectedWind, 
-                result,
-                timestamp: Date.now() 
+            currentShots.push({
+                shotNumber: currentShots.length + 1,
+                situation,
+                club,
+                distance,
+                result: selectedResult
             });
             
-            document.getElementById('hole').value = '';
-            document.getElementById('score').value = '';
             document.getElementById('distance').value = '';
-            document.getElementById('club').value = '';
-            document.getElementById('result').value = '';
+            document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
+            selectedResult = null;
             
-            document.querySelectorAll('.wind-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector('.wind-btn').classList.add('active');
-            selectedWind = '無風';
+            updateCurrentShots();
+            document.getElementById('shotCount').textContent = currentShots.length + 1;
+        }
+        
+        function updateCurrentShots() {
+            const container = document.getElementById('currentShots');
+            if (currentShots.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
             
+            container.style.display = 'block';
+            container.innerHTML = currentShots.map((s, i) => `
+                <div class="shot-item">
+                    ${s.shotNumber}打目: ${s.situation} → ${s.club} → ${s.distance}yd → ${s.result}
+                </div>
+            `).join('');
+        }
+        
+        function finishHole() {
+            if (currentShots.length === 0) {
+                alert('少なくとも1打を入力してください');
+                return;
+            }
+            
+            const puttCount = currentShots.filter(s => s.club === 'PT').length;
+            
+            holes.push({
+                hole: currentHole,
+                shots: [...currentShots],
+                score: currentShots.length,
+                putts: puttCount
+            });
+            
+            currentShots = [];
+            currentHole++;
+            if (currentHole > 18) currentHole = 1;
+            
+            document.getElementById('currentHole').textContent = currentHole;
+            document.getElementById('shotCount').textContent = 1;
+            document.getElementById('situation').value = 'ティーグラウンド';
+            document.getElementById('distance').value = '';
+            document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
+            selectedResult = null;
+            
+            updateCurrentShots();
             updateDisplay();
-            
-            const addBtn = document.querySelector('.add-btn');
-            addBtn.style.transform = 'scale(1.05)';
-            setTimeout(() => addBtn.style.transform = 'scale(1)', 200);
-        }
-        
-        function deleteRecord(index) {
-            if (confirm('このショットを削除しますか?')) {
-                records.splice(index, 1);
-                updateDisplay();
-            }
-        }
-        
-        function resetAll() {
-            if (records.length === 0 || confirm('全てのデータを削除しますか?')) {
-                records = [];
-                updateDisplay();
-            }
         }
         
         function switchTab(tabName) {
@@ -542,6 +532,19 @@
             
             document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
             document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+        
+        function resetAll() {
+            if (holes.length === 0 || confirm('全てのデータを削除しますか?')) {
+                holes = [];
+                currentShots = [];
+                currentHole = 1;
+                selectedResult = null;
+                document.getElementById('currentHole').textContent = 1;
+                document.getElementById('shotCount').textContent = 1;
+                updateCurrentShots();
+                updateDisplay();
+            }
         }
         
         function updateDisplay() {
@@ -553,34 +556,40 @@
         function updateScorecard() {
             const container = document.getElementById('scorecardContainer');
             
-            if (records.length === 0) {
+            if (holes.length === 0) {
                 container.innerHTML = '<div class="empty-message">データがありません</div>';
                 return;
             }
             
             const holeScores = {};
-            records.forEach(r => {
-                if (!holeScores[r.hole]) {
-                    holeScores[r.hole] = r.score;
-                }
+            const holePutts = {};
+            holes.forEach(h => {
+                holeScores[h.hole] = h.score;
+                holePutts[h.hole] = h.putts;
             });
             
             const frontNine = [];
             const backNine = [];
+            const frontPutts = [];
+            const backPutts = [];
             let frontTotal = 0;
             let backTotal = 0;
+            let frontPuttTotal = 0;
+            let backPuttTotal = 0;
             
             for (let i = 1; i <= 9; i++) {
                 frontNine.push(holeScores[i] || '-');
+                frontPutts.push(holePutts[i] || '-');
                 if (holeScores[i]) frontTotal += holeScores[i];
+                if (holePutts[i]) frontPuttTotal += holePutts[i];
             }
             
             for (let i = 10; i <= 18; i++) {
                 backNine.push(holeScores[i] || '-');
+                backPutts.push(holePutts[i] || '-');
                 if (holeScores[i]) backTotal += holeScores[i];
+                if (holePutts[i]) backPuttTotal += holePutts[i];
             }
-            
-            const grandTotal = frontTotal + backTotal;
             
             container.innerHTML = `
                 <div class="scorecard">
@@ -590,9 +599,14 @@
                         <div class="scorecard-cell">OUT</div>
                     </div>
                     <div class="scorecard-row">
-                        <div class="scorecard-cell" style="font-weight: 700;">Score</div>
+                        <div class="scorecard-cell" style="font-weight: 700;">打数</div>
                         ${frontNine.map(s => `<div class="scorecard-cell">${s}</div>`).join('')}
-                        <div class="scorecard-cell">${frontTotal || '-'}</div>
+                        <div class="scorecard-cell" style="background: #f0f0f0; font-weight: 700;">${frontTotal || '-'}</div>
+                    </div>
+                    <div class="scorecard-row">
+                        <div class="scorecard-cell" style="font-weight: 700;">PT</div>
+                        ${frontPutts.map(p => `<div class="scorecard-cell">${p}</div>`).join('')}
+                        <div class="scorecard-cell" style="background: #f0f0f0; font-weight: 700;">${frontPuttTotal || '-'}</div>
                     </div>
                 </div>
                 <div class="scorecard" style="margin-top: 10px;">
@@ -602,19 +616,24 @@
                         <div class="scorecard-cell">IN</div>
                     </div>
                     <div class="scorecard-row">
-                        <div class="scorecard-cell" style="font-weight: 700;">Score</div>
+                        <div class="scorecard-cell" style="font-weight: 700;">打数</div>
                         ${backNine.map(s => `<div class="scorecard-cell">${s}</div>`).join('')}
-                        <div class="scorecard-cell">${backTotal || '-'}</div>
+                        <div class="scorecard-cell" style="background: #f0f0f0; font-weight: 700;">${backTotal || '-'}</div>
+                    </div>
+                    <div class="scorecard-row">
+                        <div class="scorecard-cell" style="font-weight: 700;">PT</div>
+                        ${backPutts.map(p => `<div class="scorecard-cell">${p}</div>`).join('')}
+                        <div class="scorecard-cell" style="background: #f0f0f0; font-weight: 700;">${backPuttTotal || '-'}</div>
                     </div>
                 </div>
-                <div style="background: #667eea; color: white; padding: 15px; border-radius: 12px; margin-top: 10px; text-align: center; font-size: 20px; font-weight: 700;">
-                    合計スコア: ${grandTotal}
+                <div style="background: #667eea; color: white; padding: 15px; border-radius: 12px; margin-top: 10px; text-align: center; font-size: 18px; font-weight: 700;">
+                    合計: ${frontTotal + backTotal} (パット${frontPuttTotal + backPuttTotal})
                 </div>
             `;
         }
         
         function updateStats() {
-            if (records.length === 0) {
+            if (holes.length === 0) {
                 document.getElementById('avgScore').textContent = '-';
                 document.getElementById('totalHoles').textContent = '0';
                 document.getElementById('fwRate').textContent = '-';
@@ -626,36 +645,61 @@
                 return;
             }
             
-            const uniqueHoles = new Set(records.map(r => r.hole));
-            const avgScore = (records.reduce((sum, r) => sum + r.score, 0) / uniqueHoles.size).toFixed(1);
-            document.getElementById('avgScore').textContent = avgScore;
-            document.getElementById('totalHoles').textContent = uniqueHoles.size;
+            const allShots = holes.flatMap(h => h.shots.map(s => ({...s, hole: h.hole})));
             
-            const fwShots = records.filter(r => r.club === 'DR');
-            const fwKeeps = fwShots.filter(r => r.result === 'フェアウェイ').length;
-            const fwRate = fwShots.length > 0 ? ((fwKeeps / fwShots.length) * 100).toFixed(0) : '-';
+            const avgScore = (holes.reduce((sum, h) => sum + h.score, 0) / holes.length).toFixed(1);
+            document.getElementById('avgScore').textContent = avgScore;
+            document.getElementById('totalHoles').textContent = holes.length;
+            
+            const teeShots = allShots.filter(s => s.situation === 'ティーグラウンド' && s.club === 'DR');
+            const fwHits = teeShots.filter(s => ['◎', '○'].includes(s.result)).length;
+            const fwRate = teeShots.length > 0 ? ((fwHits / teeShots.length) * 100).toFixed(0) : '-';
             document.getElementById('fwRate').textContent = fwRate === '-' ? '-' : fwRate + '%';
             
-            const girShots = records.filter(r => r.result === 'パーオン').length;
-            const girRate = ((girShots / records.length) * 100).toFixed(0);
+            let parOns = 0;
+            holes.forEach(h => {
+                const greenShots = h.shots.filter(s => s.situation === 'グリーン');
+                if (greenShots.length > 0 && h.score - greenShots.length <= 2) {
+                    parOns++;
+                }
+            });
+            const girRate = ((parOns / holes.length) * 100).toFixed(0);
             document.getElementById('girRate').textContent = girRate + '%';
             
-            const upDownShots = records.filter(r => r.result === '寄せワン').length;
-            const approachShots = records.filter(r => ['AW', 'SW', 'PW'].includes(r.club)).length;
-            const upDownRate = approachShots > 0 ? ((upDownShots / approachShots) * 100).toFixed(0) : '-';
+            let upDowns = 0;
+            let upDownChances = 0;
+            holes.forEach(h => {
+                const greenShots = h.shots.filter(s => s.situation === 'グリーン');
+                if (greenShots.length > 0 && h.score - greenShots.length > 2) {
+                    upDownChances++;
+                    if (h.putts === 1) upDowns++;
+                }
+            });
+            const upDownRate = upDownChances > 0 ? ((upDowns / upDownChances) * 100).toFixed(0) : '-';
             document.getElementById('upDownRate').textContent = upDownRate === '-' ? '-' : upDownRate + '%';
             
-            const bunkerShots = records.filter(r => r.result === 'バンカー');
-            const sandSaves = bunkerShots.filter(r => r.result === '寄せワン').length;
-            const sandSaveRate = bunkerShots.length > 0 ? ((sandSaves / bunkerShots.length) * 100).toFixed(0) : '-';
+            let sandSaves = 0;
+            let sandChances = 0;
+            holes.forEach(h => {
+                const bunkerShots = h.shots.filter(s => s.situation === 'バンカー');
+                if (bunkerShots.length > 0) {
+                    sandChances++;
+                    const bunkerIndex = h.shots.findIndex(s => s.situation === 'バンカー');
+                    const afterBunker = h.shots.slice(bunkerIndex);
+                    if (afterBunker.length === 2 && afterBunker[1].club === 'PT') {
+                        sandSaves++;
+                    }
+                }
+            });
+            const sandSaveRate = sandChances > 0 ? ((sandSaves / sandChances) * 100).toFixed(0) : '-';
             document.getElementById('sandSaveRate').textContent = sandSaveRate === '-' ? '-' : sandSaveRate + '%';
             
             const clubDistances = {};
-            records.forEach(r => {
-                if (!clubDistances[r.club]) {
-                    clubDistances[r.club] = [];
+            allShots.forEach(s => {
+                if (s.club !== 'PT') {
+                    if (!clubDistances[s.club]) clubDistances[s.club] = [];
+                    clubDistances[s.club].push(s.distance);
                 }
-                clubDistances[r.club].push(r.distance);
             });
             
             let avgDistanceHTML = '';
@@ -670,38 +714,25 @@
             });
             document.getElementById('avgDistanceStats').innerHTML = avgDistanceHTML || '<div class="empty-message" style="grid-column: 1/-1;">データなし</div>';
             
-            const misses = {};
-            records.forEach(r => {
-                if (['ラフ', 'バンカー', 'OB', '池'].includes(r.result)) {
-                    misses[r.result] = (misses[r.result] || 0) + 1;
-                }
-            });
-            
-            let missHTML = '';
-            Object.entries(misses).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
-                const rate = ((count / records.length) * 100).toFixed(0);
-                missHTML += `<div style="margin-bottom: 8px;">${type}: ${count}回 (${rate}%)</div>`;
-            });
-            document.getElementById('missStats').innerHTML = missHTML || 'ミスなし！';
+            const misses = allShots.filter(s => s.result === '×').length;
+            const missRate = ((misses / allShots.length) * 100).toFixed(0);
+            document.getElementById('missStats').innerHTML = `ミスショット: ${misses}回 (${missRate}%)`;
         }
         
         function updateRecords() {
             const recordsDiv = document.getElementById('records');
             
-            if (records.length === 0) {
+            if (holes.length === 0) {
                 recordsDiv.innerHTML = '<div class="empty-message">データがありません</div>';
             } else {
-                recordsDiv.innerHTML = records.map((r, i) => `
-                    <div class="record-item">
-                        <div class="record-header">
-                            <span class="record-number">ホール ${r.hole}</span>
-                            <span class="record-score">${r.score}打</span>
-                        </div>
-                        <div class="record-details">
-                            ${r.club} • ${r.distance}yd • ${r.wind}<br>
-                            結果: ${r.result}
-                        </div>
-                        <button type="button" class="delete-btn" onclick="deleteRecord(${i})">削除</button>
+                recordsDiv.innerHTML = holes.map(h => `
+                    <div class="hole-record">
+                        <div class="hole-record-header">ホール ${h.hole} - ${h.score}打 (パット${h.putts})</div>
+                        ${h.shots.map(s => `
+                            <div style="font-size: 13px; color: #666; margin-bottom: 5px;">
+                                ${s.shotNumber}打目: ${s.situation} → ${s.club} → ${s.distance}yd → ${s.result}
+                            </div>
+                        `).join('')}
                     </div>
                 `).join('');
             }
