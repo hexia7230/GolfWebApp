@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ゴルフ統計</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .wind-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .wind-btn {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            color: #666;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .wind-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .add-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+        
+        .add-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin: 20px 0 15px 0;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #999;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 15px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .stat-card.highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .stat-card.highlight .stat-label,
+        .stat-card.highlight .stat-value {
+            color: white;
+        }
+        
+        .scorecard {
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .scorecard-header {
+            background: #f5f5f5;
+            padding: 10px;
+            border-bottom: 2px solid #333;
+            display: grid;
+            grid-template-columns: 40px repeat(9, 1fr) 50px;
+            gap: 2px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        .scorecard-row {
+            display: grid;
+            grid-template-columns: 40px repeat(9, 1fr) 50px;
+            gap: 2px;
+            border-bottom: 1px solid #ddd;
+            font-size: 11px;
+        }
+        
+        .scorecard-cell {
+            padding: 8px 4px;
+            text-align: center;
+            border-right: 1px solid #ddd;
+        }
+        
+        .scorecard-cell:last-child {
+            background: #f0f0f0;
+            font-weight: 700;
+        }
+        
+        .records {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .record-item {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .record-number {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .record-score {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .record-details {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .delete-btn {
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        
+        .reset-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-size: 15px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin: 20px 0 12px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⛳ ゴルフ統計</h1>
+            <div class="subtitle">詳細なスコア分析</div>
+        </div>
+        
+        <div class="content">
+            <div class="input-group">
+                <label class="input-label">ホール番号</label>
+                <input type="number" id="hole" placeholder="1-18" min="1" max="18">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">スコア</label>
+                <input type="number" id="score" placeholder="例: 4" min="1">
+            </div>
+            
+            <div class="input-row">
+                <div class="input-group">
+                    <label class="input-label">残距離 (yd)</label>
+                    <input type="number" id="distance" placeholder="150" min="0" step="1">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">番手</label>
+                    <select id="club">
+                        <option value="">選択</option>
+                        <option value="DR">ドライバー</option>
+                        <option value="3W">3W</option>
+                        <option value="5W">5W</option>
+                        <option value="UT">ユーティリティ</option>
+                        <option value="3I">3番アイアン</option>
+                        <option value="4I">4番アイアン</option>
+                        <option value="5I">5番アイアン</option>
+                        <option value="6I">6番アイアン</option>
+                        <option value="7I">7番アイアン</option>
+                        <option value="8I">8番アイアン</option>
+                        <option value="9I">9番アイアン</option>
+                        <option value="PW">ピッチング</option>
+                        <option value="AW">アプローチ</option>
+                        <option value="SW">サンド</option>
+                        <option value="PT">パター</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">風向き</label>
+                <div class="wind-grid">
+                    <button type="button" class="wind-btn active" onclick="selectWind(this, '無風')">無風</button>
+                    <button type="button" class="wind-btn" onclick="selectWind(this, '北 ↑')">北 ↑</button>
+                    <button type="button" class="wind-btn" onclick="selectWind(this, '南 ↓')">南 ↓</button>
+                    <button type="button" class="wind-btn" onclick="selectWind(this, '東 →')">東 →</button>
+                    <button type="button" class="wind-btn" onclick="selectWind(this, '西 ←')">西 ←</button>
+                    <button type="button" class="wind-btn" onclick="selectWind(this, '強風')">強風</button>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">結果</label>
+                <select id="result">
+                    <option value="">選択</option>
+                    <option value="フェアウェイ">フェアウェイ</option>
+                    <option value="グリーン">グリーン</option>
+                    <option value="ラフ">ラフ</option>
+                    <option value="バンカー">バンカー</option>
+                    <option value="OB">OB</option>
+                    <option value="池">池</option>
+                    <option value="寄せワン">寄せワン</option>
+                    <option value="パーオン">パーオン</option>
+                </select>
+            </div>
+            
+            <button type="button" class="add-btn" onclick="addRecord()">➕ ショットを追加</button>
+            
+            <div class="tabs">
+                <button type="button" class="tab active" onclick="switchTab('scorecard')">📝 スコア表</button>
+                <button type="button" class="tab" onclick="switchTab('stats')">📊 統計</button>
+                <button type="button" class="tab" onclick="switchTab('records')">📋 履歴</button>
+            </div>
+            
+            <div id="scorecardTab" class="tab-content active">
+                <div id="scorecardContainer">
+                    <div class="empty-message">データがありません</div>
+                </div>
+            </div>
+            
+            <div id="statsTab" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card highlight">
+                        <div class="stat-label">平均スコア</div>
+                        <div class="stat-value" id="avgScore">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">総ホール数</div>
+                        <div class="stat-value" id="totalHoles">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">FWキープ率</div>
+                        <div class="stat-value" id="fwRate">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">パーオン率</div>
+                        <div class="stat-value" id="girRate">-</div>
+                    </div>
+                </div>
+                
+                <div class="section-title">📏 平均飛距離</div>
+                <div class="stats-grid" id="avgDistanceStats">
+                    <div class="empty-message" style="grid-column: 1/-1;">データなし</div>
+                </div>
+                
+                <div class="section-title">🎯 成績データ</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">寄せワン率</div>
+                        <div class="stat-value" id="upDownRate">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">サンドセーブ率</div>
+                        <div class="stat-value" id="sandSaveRate">-</div>
+                    </div>
+                </div>
+                
+                <div class="section-title">⚠️ ミス傾向</div>
+                <div id="missStats" style="background: #f9f9f9; padding: 15px; border-radius: 12px; font-size: 14px; color: #666;">
+                    データを追加してください
+                </div>
+            </div>
+            
+            <div id="recordsTab" class="tab-content">
+                <div class="records" id="records">
+                    <div class="empty-message">データがありません</div>
+                </div>
+            </div>
+            
+            <button type="button" class="reset-btn" onclick="resetAll()">🗑️ 全てリセット</button>
+        </div>
+    </div>
+    
+    <script>
+        let records = [];
+        let selectedWind = '無風';
+        
+        function selectWind(btn, wind) {
+            selectedWind = wind;
+            document.querySelectorAll('.wind-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            btn.classList.add('active');
+        }
+        
+        function addRecord() {
+            const hole = parseInt(document.getElementById('hole').value);
+            const score = parseInt(document.getElementById('score').value);
+            const distance = parseFloat(document.getElementById('distance').value);
+            const club = document.getElementById('club').value;
+            const result = document.getElementById('result').value;
+            
+            if (!hole || !score || !distance || !club || !result) {
+                alert('全ての項目を入力してください');
+                return;
+            }
+            
+            if (hole < 1 || hole > 18) {
+                alert('ホール番号は1-18で入力してください');
+                return;
+            }
+            
+            records.push({ 
+                hole,
+                score, 
+                distance, 
+                club, 
+                wind: selectedWind, 
+                result,
+                timestamp: Date.now() 
+            });
+            
+            document.getElementById('hole').value = '';
+            document.getElementById('score').value = '';
+            document.getElementById('distance').value = '';
+            document.getElementById('club').value = '';
+            document.getElementById('result').value = '';
+            
+            document.querySelectorAll('.wind-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.wind-btn').classList.add('active');
+            selectedWind = '無風';
+            
+            updateDisplay();
+            
+            const addBtn = document.querySelector('.add-btn');
+            addBtn.style.transform = 'scale(1.05)';
+            setTimeout(() => addBtn.style.transform = 'scale(1)', 200);
+        }
+        
+        function deleteRecord(index) {
+            if (confirm('このショットを削除しますか?')) {
+                records.splice(index, 1);
+                updateDisplay();
+            }
+        }
+        
+        function resetAll() {
+            if (records.length === 0 || confirm('全てのデータを削除しますか?')) {
+                records = [];
+                updateDisplay();
+            }
+        }
+        
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+        
+        function updateDisplay() {
+            updateScorecard();
+            updateStats();
+            updateRecords();
+        }
+        
+        function updateScorecard() {
+            const container = document.getElementById('scorecardContainer');
+            
+            if (records.length === 0) {
+                container.innerHTML = '<div class="empty-message">データがありません</div>';
+                return;
+            }
+            
+            const holeScores = {};
+            records.forEach(r => {
+                if (!holeScores[r.hole]) {
+                    holeScores[r.hole] = r.score;
+                }
+            });
+            
+            const frontNine = [];
+            const backNine = [];
+            let frontTotal = 0;
+            let backTotal = 0;
+            
+            for (let i = 1; i <= 9; i++) {
+                frontNine.push(holeScores[i] || '-');
+                if (holeScores[i]) frontTotal += holeScores[i];
+            }
+            
+            for (let i = 10; i <= 18; i++) {
+                backNine.push(holeScores[i] || '-');
+                if (holeScores[i]) backTotal += holeScores[i];
+            }
+            
+            const grandTotal = frontTotal + backTotal;
+            
+            container.innerHTML = `
+                <div class="scorecard">
+                    <div class="scorecard-header">
+                        <div class="scorecard-cell">HOLE</div>
+                        ${Array.from({length: 9}, (_, i) => `<div class="scorecard-cell">${i + 1}</div>`).join('')}
+                        <div class="scorecard-cell">OUT</div>
+                    </div>
+                    <div class="scorecard-row">
+                        <div class="scorecard-cell" style="font-weight: 700;">Score</div>
+                        ${frontNine.map(s => `<div class="scorecard-cell">${s}</div>`).join('')}
+                        <div class="scorecard-cell">${frontTotal || '-'}</div>
+                    </div>
+                </div>
+                <div class="scorecard" style="margin-top: 10px;">
+                    <div class="scorecard-header">
+                        <div class="scorecard-cell">HOLE</div>
+                        ${Array.from({length: 9}, (_, i) => `<div class="scorecard-cell">${i + 10}</div>`).join('')}
+                        <div class="scorecard-cell">IN</div>
+                    </div>
+                    <div class="scorecard-row">
+                        <div class="scorecard-cell" style="font-weight: 700;">Score</div>
+                        ${backNine.map(s => `<div class="scorecard-cell">${s}</div>`).join('')}
+                        <div class="scorecard-cell">${backTotal || '-'}</div>
+                    </div>
+                </div>
+                <div style="background: #667eea; color: white; padding: 15px; border-radius: 12px; margin-top: 10px; text-align: center; font-size: 20px; font-weight: 700;">
+                    合計スコア: ${grandTotal}
+                </div>
+            `;
+        }
+        
+        function updateStats() {
+            if (records.length === 0) {
+                document.getElementById('avgScore').textContent = '-';
+                document.getElementById('totalHoles').textContent = '0';
+                document.getElementById('fwRate').textContent = '-';
+                document.getElementById('girRate').textContent = '-';
+                document.getElementById('upDownRate').textContent = '-';
+                document.getElementById('sandSaveRate').textContent = '-';
+                document.getElementById('avgDistanceStats').innerHTML = '<div class="empty-message" style="grid-column: 1/-1;">データなし</div>';
+                document.getElementById('missStats').innerHTML = 'データを追加してください';
+                return;
+            }
+            
+            const uniqueHoles = new Set(records.map(r => r.hole));
+            const avgScore = (records.reduce((sum, r) => sum + r.score, 0) / uniqueHoles.size).toFixed(1);
+            document.getElementById('avgScore').textContent = avgScore;
+            document.getElementById('totalHoles').textContent = uniqueHoles.size;
+            
+            const fwShots = records.filter(r => r.club === 'DR');
+            const fwKeeps = fwShots.filter(r => r.result === 'フェアウェイ').length;
+            const fwRate = fwShots.length > 0 ? ((fwKeeps / fwShots.length) * 100).toFixed(0) : '-';
+            document.getElementById('fwRate').textContent = fwRate === '-' ? '-' : fwRate + '%';
+            
+            const girShots = records.filter(r => r.result === 'パーオン').length;
+            const girRate = ((girShots / records.length) * 100).toFixed(0);
+            document.getElementById('girRate').textContent = girRate + '%';
+            
+            const upDownShots = records.filter(r => r.result === '寄せワン').length;
+            const approachShots = records.filter(r => ['AW', 'SW', 'PW'].includes(r.club)).length;
+            const upDownRate = approachShots > 0 ? ((upDownShots / approachShots) * 100).toFixed(0) : '-';
+            document.getElementById('upDownRate').textContent = upDownRate === '-' ? '-' : upDownRate + '%';
+            
+            const bunkerShots = records.filter(r => r.result === 'バンカー');
+            const sandSaves = bunkerShots.filter(r => r.result === '寄せワン').length;
+            const sandSaveRate = bunkerShots.length > 0 ? ((sandSaves / bunkerShots.length) * 100).toFixed(0) : '-';
+            document.getElementById('sandSaveRate').textContent = sandSaveRate === '-' ? '-' : sandSaveRate + '%';
+            
+            const clubDistances = {};
+            records.forEach(r => {
+                if (!clubDistances[r.club]) {
+                    clubDistances[r.club] = [];
+                }
+                clubDistances[r.club].push(r.distance);
+            });
+            
+            let avgDistanceHTML = '';
+            Object.keys(clubDistances).sort().forEach(club => {
+                const avg = (clubDistances[club].reduce((a, b) => a + b, 0) / clubDistances[club].length).toFixed(0);
+                avgDistanceHTML += `
+                    <div class="stat-card">
+                        <div class="stat-label">${club}</div>
+                        <div class="stat-value">${avg}yd</div>
+                    </div>
+                `;
+            });
+            document.getElementById('avgDistanceStats').innerHTML = avgDistanceHTML || '<div class="empty-message" style="grid-column: 1/-1;">データなし</div>';
+            
+            const misses = {};
+            records.forEach(r => {
+                if (['ラフ', 'バンカー', 'OB', '池'].includes(r.result)) {
+                    misses[r.result] = (misses[r.result] || 0) + 1;
+                }
+            });
+            
+            let missHTML = '';
+            Object.entries(misses).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
+                const rate = ((count / records.length) * 100).toFixed(0);
+                missHTML += `<div style="margin-bottom: 8px;">${type}: ${count}回 (${rate}%)</div>`;
+            });
+            document.getElementById('missStats').innerHTML = missHTML || 'ミスなし！';
+        }
+        
+        function updateRecords() {
+            const recordsDiv = document.getElementById('records');
+            
+            if (records.length === 0) {
+                recordsDiv.innerHTML = '<div class="empty-message">データがありません</div>';
+            } else {
+                recordsDiv.innerHTML = records.map((r, i) => `
+                    <div class="record-item">
+                        <div class="record-header">
+                            <span class="record-number">ホール ${r.hole}</span>
+                            <span class="record-score">${r.score}打</span>
+                        </div>
+                        <div class="record-details">
+                            ${r.club} • ${r.distance}yd • ${r.wind}<br>
+                            結果: ${r.result}
+                        </div>
+                        <button type="button" class="delete-btn" onclick="deleteRecord(${i})">削除</button>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        updateDisplay();
+    </script>
+</body>
+</html>
