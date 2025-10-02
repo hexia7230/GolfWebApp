@@ -13,180 +13,216 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
             min-height: 100vh;
             padding: 10px;
         }
         
         .container {
-            max-width: 500px;
+            max-width: 480px;
             margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
             overflow: hidden;
         }
         
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
             color: white;
-            padding: 25px 20px;
+            padding: 20px;
             text-align: center;
         }
         
         h1 {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
         }
         
         .content {
-            padding: 20px;
+            padding: 16px;
         }
         
         .hole-header {
-            background: #f5f5f5;
-            padding: 15px;
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            padding: 16px;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
         .hole-info {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
-            color: #333;
+            color: #1B5E20;
         }
         
         .shot-number {
-            font-size: 16px;
-            color: #667eea;
+            font-size: 18px;
+            color: #2E7D32;
             font-weight: 600;
         }
         
-        .input-group {
-            margin-bottom: 15px;
-        }
-        
-        .input-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #666;
-            margin-bottom: 8px;
-            display: block;
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
+        .input-section {
+            background: #F5F5F5;
+            padding: 16px;
             border-radius: 12px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
+            margin-bottom: 16px;
         }
         
         .input-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .input-group {
+            margin-bottom: 12px;
+        }
+        
+        .input-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 6px;
+            display: block;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+            transition: border-color 0.2s;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #2E7D32;
         }
         
         .result-btns {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
         }
         
         .result-btn {
-            padding: 15px;
-            border: 2px solid #e0e0e0;
+            padding: 12px;
+            border: 2px solid #E0E0E0;
             background: white;
             color: #666;
-            border-radius: 12px;
-            font-size: 24px;
+            border-radius: 8px;
+            font-size: 20px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        
+        .result-btn:active {
+            transform: scale(0.95);
         }
         
         .result-btn.active {
-            border-color: #667eea;
-            background: #667eea;
+            border-color: #2E7D32;
+            background: #2E7D32;
             color: white;
-            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
+        }
+        
+        .action-btns {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 16px;
         }
         
         .add-shot-btn {
-            width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            background: #2E7D32;
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            margin-bottom: 10px;
+            transition: background 0.2s;
+        }
+        
+        .add-shot-btn:active {
+            background: #1B5E20;
         }
         
         .finish-hole-btn {
-            width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #1976D2;
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .finish-hole-btn:active {
+            background: #1565C0;
         }
         
         .current-shots {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            max-height: 200px;
+            background: #FFF9C4;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            max-height: 180px;
             overflow-y: auto;
+            border: 2px solid #FDD835;
         }
         
         .shot-item {
-            padding: 10px;
+            padding: 8px;
             background: white;
-            border-radius: 8px;
-            margin-bottom: 8px;
+            border-radius: 6px;
+            margin-bottom: 6px;
             font-size: 13px;
-            color: #666;
+            color: #333;
+            border-left: 3px solid #2E7D32;
+        }
+        
+        .shot-item:last-child {
+            margin-bottom: 0;
         }
         
         .tabs {
             display: flex;
-            gap: 8px;
-            margin: 20px 0 15px 0;
-            border-bottom: 2px solid #e0e0e0;
+            gap: 0;
+            margin: 16px 0;
+            background: #F5F5F5;
+            border-radius: 8px;
+            padding: 4px;
         }
         
         .tab {
             flex: 1;
-            padding: 12px;
-            background: none;
+            padding: 10px;
+            background: transparent;
             border: none;
-            border-bottom: 3px solid transparent;
-            color: #999;
-            font-size: 14px;
+            color: #666;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
         }
         
         .tab.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
+            background: white;
+            color: #2E7D32;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
         .tab-content {
@@ -200,31 +236,33 @@
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 15px;
+            gap: 10px;
+            margin-bottom: 16px;
         }
         
         .stat-card {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            padding: 15px;
-            border-radius: 16px;
+            background: #F5F5F5;
+            padding: 14px;
+            border-radius: 10px;
             text-align: center;
         }
         
         .stat-label {
-            font-size: 12px;
+            font-size: 11px;
             color: #666;
             margin-bottom: 6px;
+            font-weight: 600;
         }
         
         .stat-value {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
-            color: #333;
+            color: #2E7D32;
         }
         
         .stat-card.highlight {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2E7D32, #1B5E20);
+            color: white;
         }
         
         .stat-card.highlight .stat-label,
@@ -234,37 +272,49 @@
         
         .scorecard {
             background: white;
-            border: 2px solid #333;
+            border: 2px solid #2E7D32;
             border-radius: 8px;
             overflow-x: auto;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         .scorecard-header {
-            background: #f5f5f5;
-            padding: 10px;
-            border-bottom: 2px solid #333;
+            background: #E8F5E9;
+            padding: 8px;
+            border-bottom: 2px solid #2E7D32;
             display: grid;
-            grid-template-columns: 40px repeat(9, 1fr) 50px;
-            gap: 2px;
-            font-size: 11px;
+            grid-template-columns: 45px repeat(9, 1fr) 55px;
+            gap: 1px;
+            font-size: 10px;
             font-weight: 700;
             min-width: 500px;
+            color: #1B5E20;
         }
         
         .scorecard-row {
             display: grid;
-            grid-template-columns: 40px repeat(9, 1fr) 50px;
-            gap: 2px;
-            border-bottom: 1px solid #ddd;
+            grid-template-columns: 45px repeat(9, 1fr) 55px;
+            gap: 1px;
             font-size: 11px;
             min-width: 500px;
+            border-bottom: 1px solid #E0E0E0;
         }
         
         .scorecard-cell {
             padding: 8px 4px;
             text-align: center;
-            border-right: 1px solid #ddd;
+            background: white;
+        }
+        
+        .scorecard-cell:first-child {
+            font-weight: 700;
+            background: #F5F5F5;
+        }
+        
+        .scorecard-cell:last-child {
+            background: #2E7D32;
+            color: white;
+            font-weight: 700;
         }
         
         .records {
@@ -273,43 +323,69 @@
         }
         
         .hole-record {
-            background: #f9f9f9;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 10px;
+            background: #F5F5F5;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 4px solid #2E7D32;
         }
         
         .hole-record-header {
             font-weight: 700;
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 16px;
+            color: #1B5E20;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        
+        .shot-detail {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            background: white;
+            border-radius: 4px;
         }
         
         .reset-btn {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            padding: 12px;
+            background: #D32F2F;
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 15px;
+            margin-top: 16px;
+        }
+        
+        .reset-btn:active {
+            background: #B71C1C;
         }
         
         .section-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 700;
-            color: #333;
-            margin: 20px 0 12px 0;
+            color: #1B5E20;
+            margin: 16px 0 10px 0;
         }
         
         .empty-message {
             text-align: center;
             color: #999;
-            padding: 40px 20px;
+            padding: 30px 20px;
+            font-size: 14px;
+        }
+        
+        .total-score {
+            background: linear-gradient(135deg, #2E7D32, #1B5E20);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 12px;
         }
     </style>
 </head>
@@ -325,63 +401,67 @@
                 <div class="shot-number"><span id="shotCount">1</span>打目</div>
             </div>
             
-            <div class="input-row" style="margin-bottom: 15px;">
-                <div class="input-group">
-                    <label class="input-label">状況</label>
-                    <select id="situation">
-                        <option value="ティーグラウンド">ティーグラウンド</option>
-                        <option value="フェアウェイ">フェアウェイ</option>
-                        <option value="ラフ">ラフ</option>
-                        <option value="バンカー">バンカー</option>
-                        <option value="グリーン">グリーン</option>
-                    </select>
+            <div class="input-section">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label class="input-label">状況</label>
+                        <select id="situation">
+                            <option value="ティーグラウンド">ティーグラウンド</option>
+                            <option value="フェアウェイ">フェアウェイ</option>
+                            <option value="ラフ">ラフ</option>
+                            <option value="バンカー">バンカー</option>
+                            <option value="グリーン">グリーン</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">番手</label>
+                        <select id="club">
+                            <option value="DR">DR</option>
+                            <option value="3W">3W</option>
+                            <option value="5W">5W</option>
+                            <option value="UT">UT</option>
+                            <option value="3I">3I</option>
+                            <option value="4I">4I</option>
+                            <option value="5I">5I</option>
+                            <option value="6I">6I</option>
+                            <option value="7I">7I</option>
+                            <option value="8I">8I</option>
+                            <option value="9I">9I</option>
+                            <option value="PW">PW</option>
+                            <option value="AW">AW</option>
+                            <option value="SW">SW</option>
+                            <option value="PT">PT</option>
+                        </select>
+                    </div>
                 </div>
+                
                 <div class="input-group">
-                    <label class="input-label">番手</label>
-                    <select id="club">
-                        <option value="DR">DR</option>
-                        <option value="3W">3W</option>
-                        <option value="5W">5W</option>
-                        <option value="UT">UT</option>
-                        <option value="3I">3I</option>
-                        <option value="4I">4I</option>
-                        <option value="5I">5I</option>
-                        <option value="6I">6I</option>
-                        <option value="7I">7I</option>
-                        <option value="8I">8I</option>
-                        <option value="9I">9I</option>
-                        <option value="PW">PW</option>
-                        <option value="AW">AW</option>
-                        <option value="SW">SW</option>
-                        <option value="PT">PT</option>
-                    </select>
+                    <label class="input-label">距離 (yd)</label>
+                    <input type="number" id="distance" placeholder="150" min="0" step="1">
                 </div>
-            </div>
-            
-            <div class="input-group">
-                <label class="input-label">距離</label>
-                <input type="number" id="distance" placeholder="150 (yd)" min="0" step="1">
-            </div>
-            
-            <div class="input-group">
-                <label class="input-label">結果</label>
-                <div class="result-btns">
-                    <button type="button" class="result-btn" onclick="selectResult(this, '◎')">◎</button>
-                    <button type="button" class="result-btn" onclick="selectResult(this, '○')">○</button>
-                    <button type="button" class="result-btn" onclick="selectResult(this, '△')">△</button>
-                    <button type="button" class="result-btn" onclick="selectResult(this, '×')">×</button>
+                
+                <div class="input-group">
+                    <label class="input-label">結果</label>
+                    <div class="result-btns">
+                        <button type="button" class="result-btn" onclick="selectResult(this, '◎')">◎</button>
+                        <button type="button" class="result-btn" onclick="selectResult(this, '○')">○</button>
+                        <button type="button" class="result-btn" onclick="selectResult(this, '△')">△</button>
+                        <button type="button" class="result-btn" onclick="selectResult(this, '×')">×</button>
+                    </div>
                 </div>
             </div>
             
             <div class="current-shots" id="currentShots" style="display: none;"></div>
             
-            <button type="button" class="add-shot-btn" onclick="addShot()">➕ 打を追加</button>
-            <button type="button" class="finish-hole-btn" onclick="finishHole()">✓ ホール終了</button>
+            <div class="action-btns">
+                <button type="button" class="add-shot-btn" onclick="addShot()">➕ 打を追加</button>
+                <button type="button" class="finish-hole-btn" onclick="finishHole()">✓ ホール終了</button>
+            </div>
             
             <div class="tabs">
-                <button type="button" class="tab active" onclick="switchTab('scorecard')">📝 スコア表</button>
-                <button type="button" class="tab" onclick="switchTab('stats')">📊 統計</button>
-                <button type="button" class="tab" onclick="switchTab('records')">📋 詳細</button>
+                <button type="button" class="tab active" onclick="switchTab('scorecard')">スコア表</button>
+                <button type="button" class="tab" onclick="switchTab('stats')">統計</button>
+                <button type="button" class="tab" onclick="switchTab('records')">詳細</button>
             </div>
             
             <div id="scorecardTab" class="tab-content active">
@@ -428,7 +508,7 @@
                 </div>
                 
                 <div class="section-title">⚠️ ミス傾向</div>
-                <div id="missStats" style="background: #f9f9f9; padding: 15px; border-radius: 12px; font-size: 14px; color: #666;">
+                <div id="missStats" style="background: #F5F5F5; padding: 12px; border-radius: 8px; font-size: 13px; color: #666;">
                     データを追加してください
                 </div>
             </div>
@@ -477,6 +557,12 @@
             document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
             selectedResult = null;
             
+            if (club === 'PT') {
+                document.getElementById('situation').value = 'グリーン';
+            } else if (currentShots.length === 1) {
+                document.getElementById('situation').value = 'フェアウェイ';
+            }
+            
             updateCurrentShots();
             document.getElementById('shotCount').textContent = currentShots.length + 1;
         }
@@ -489,9 +575,9 @@
             }
             
             container.style.display = 'block';
-            container.innerHTML = currentShots.map((s, i) => `
+            container.innerHTML = currentShots.map(s => `
                 <div class="shot-item">
-                    ${s.shotNumber}打目: ${s.situation} → ${s.club} → ${s.distance}yd → ${s.result}
+                    ${s.shotNumber}打目: ${s.situation} → ${s.club} (${s.distance}yd) → ${s.result}
                 </div>
             `).join('');
         }
@@ -542,6 +628,7 @@
                 selectedResult = null;
                 document.getElementById('currentHole').textContent = 1;
                 document.getElementById('shotCount').textContent = 1;
+                document.getElementById('situation').value = 'ティーグラウンド';
                 updateCurrentShots();
                 updateDisplay();
             }
@@ -599,14 +686,14 @@
                         <div class="scorecard-cell">OUT</div>
                     </div>
                     <div class="scorecard-row">
-                        <div class="scorecard-cell" style="font-weight: 700;">打数</div>
+                        <div class="scorecard-cell">打数</div>
                         ${frontNine.map(s => `<div class="scorecard-cell">${s}</div>`).join('')}
-                        <div class="scorecard-cell" style="background: #f0f0f0; font-weight: 700;">${frontTotal || '-'}</div>
+                        <div class="scorecard-cell">${frontTotal || '-'}</div>
                     </div>
                     <div class="scorecard-row">
-                        <div class="scorecard-cell" style="font-weight: 700;">PT</div>
+                        <div class="scorecard-cell">PT</div>
                         ${frontPutts.map(p => `<div class="scorecard-cell">${p}</div>`).join('')}
-                        <div class="scorecard-cell" style="background: #f0f0f0; font-weight: 700;">${frontPuttTotal || '-'}</div>
+                        <div class="scorecard-cell">${frontPuttTotal || '-'}</div>
                     </div>
                 </div>
                 <div class="scorecard" style="margin-top: 10px;">
@@ -616,17 +703,17 @@
                         <div class="scorecard-cell">IN</div>
                     </div>
                     <div class="scorecard-row">
-                        <div class="scorecard-cell" style="font-weight: 700;">打数</div>
+                        <div class="scorecard-cell">打数</div>
                         ${backNine.map(s => `<div class="scorecard-cell">${s}</div>`).join('')}
-                        <div class="scorecard-cell" style="background: #f0f0f0; font-weight: 700;">${backTotal || '-'}</div>
+                        <div class="scorecard-cell">${backTotal || '-'}</div>
                     </div>
                     <div class="scorecard-row">
-                        <div class="scorecard-cell" style="font-weight: 700;">PT</div>
+                        <div class="scorecard-cell">PT</div>
                         ${backPutts.map(p => `<div class="scorecard-cell">${p}</div>`).join('')}
-                        <div class="scorecard-cell" style="background: #f0f0f0; font-weight: 700;">${backPuttTotal || '-'}</div>
+                        <div class="scorecard-cell">${backPuttTotal || '-'}</div>
                     </div>
                 </div>
-                <div style="background: #667eea; color: white; padding: 15px; border-radius: 12px; margin-top: 10px; text-align: center; font-size: 18px; font-weight: 700;">
+                <div class="total-score">
                     合計: ${frontTotal + backTotal} (パット${frontPuttTotal + backPuttTotal})
                 </div>
             `;
@@ -729,8 +816,8 @@
                     <div class="hole-record">
                         <div class="hole-record-header">ホール ${h.hole} - ${h.score}打 (パット${h.putts})</div>
                         ${h.shots.map(s => `
-                            <div style="font-size: 13px; color: #666; margin-bottom: 5px;">
-                                ${s.shotNumber}打目: ${s.situation} → ${s.club} → ${s.distance}yd → ${s.result}
+                            <div class="shot-detail">
+                                ${s.shotNumber}打目: ${s.situation} → ${s.club} (${s.distance}yd) → ${s.result}
                             </div>
                         `).join('')}
                     </div>
