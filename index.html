@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ゴルフ統計</title>
+    <title>ゴルフ統計Pro</title>
     <style>
         * {
             margin: 0;
@@ -32,11 +32,47 @@
             color: white;
             padding: 20px;
             text-align: center;
+            position: relative;
+        }
+        
+        .settings-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
         }
         
         h1 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
+        }
+        
+        .mode-toggle {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .mode-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .mode-btn.active {
+            background: white;
+            color: #2E7D32;
         }
         
         .content {
@@ -48,21 +84,37 @@
             padding: 16px;
             border-radius: 12px;
             margin-bottom: 16px;
+        }
+        
+        .hole-info-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 8px;
         }
         
         .hole-info {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             color: #1B5E20;
         }
         
         .shot-number {
-            font-size: 18px;
+            font-size: 16px;
             color: #2E7D32;
             font-weight: 600;
+        }
+        
+        .hole-par {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .par-select {
+            padding: 4px 8px;
+            border: 1px solid #2E7D32;
+            border-radius: 4px;
+            margin-left: 8px;
         }
         
         .input-section {
@@ -98,7 +150,6 @@
             border-radius: 8px;
             font-size: 15px;
             background: white;
-            transition: border-color 0.2s;
         }
         
         select:focus, input:focus {
@@ -120,19 +171,21 @@
             border-radius: 8px;
             font-size: 20px;
             cursor: pointer;
-            transition: all 0.2s;
             font-weight: 600;
-        }
-        
-        .result-btn:active {
-            transform: scale(0.95);
         }
         
         .result-btn.active {
             border-color: #2E7D32;
             background: #2E7D32;
             color: white;
-            box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
+        }
+        
+        .advanced-only {
+            display: none;
+        }
+        
+        .advanced-only.show {
+            display: block;
         }
         
         .action-btns {
@@ -150,11 +203,6 @@
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
-        }
-        
-        .add-shot-btn:active {
-            background: #1B5E20;
         }
         
         .finish-hole-btn {
@@ -166,11 +214,6 @@
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
-        }
-        
-        .finish-hole-btn:active {
-            background: #1565C0;
         }
         
         .current-shots {
@@ -188,13 +231,9 @@
             background: white;
             border-radius: 6px;
             margin-bottom: 6px;
-            font-size: 13px;
+            font-size: 12px;
             color: #333;
             border-left: 3px solid #2E7D32;
-        }
-        
-        .shot-item:last-child {
-            margin-bottom: 0;
         }
         
         .tabs {
@@ -204,19 +243,20 @@
             background: #F5F5F5;
             border-radius: 8px;
             padding: 4px;
+            overflow-x: auto;
         }
         
         .tab {
             flex: 1;
-            padding: 10px;
+            padding: 10px 8px;
             background: transparent;
             border: none;
             color: #666;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             border-radius: 6px;
-            transition: all 0.2s;
+            white-space: nowrap;
         }
         
         .tab.active {
@@ -242,31 +282,39 @@
         
         .stat-card {
             background: #F5F5F5;
-            padding: 14px;
+            padding: 12px;
             border-radius: 10px;
             text-align: center;
         }
         
         .stat-label {
-            font-size: 11px;
+            font-size: 10px;
             color: #666;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             font-weight: 600;
         }
         
         .stat-value {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             color: #2E7D32;
         }
         
         .stat-card.highlight {
             background: linear-gradient(135deg, #2E7D32, #1B5E20);
-            color: white;
         }
         
         .stat-card.highlight .stat-label,
         .stat-card.highlight .stat-value {
+            color: white;
+        }
+        
+        .sg-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .sg-card .stat-label,
+        .sg-card .stat-value {
             color: white;
         }
         
@@ -278,25 +326,23 @@
             margin-bottom: 12px;
         }
         
-        .scorecard-header {
-            background: #E8F5E9;
-            padding: 8px;
-            border-bottom: 2px solid #2E7D32;
+        .scorecard-header, .scorecard-row {
             display: grid;
             grid-template-columns: 45px repeat(9, 1fr) 55px;
             gap: 1px;
             font-size: 10px;
-            font-weight: 700;
             min-width: 500px;
+        }
+        
+        .scorecard-header {
+            background: #E8F5E9;
+            padding: 8px;
+            border-bottom: 2px solid #2E7D32;
+            font-weight: 700;
             color: #1B5E20;
         }
         
         .scorecard-row {
-            display: grid;
-            grid-template-columns: 45px repeat(9, 1fr) 55px;
-            gap: 1px;
-            font-size: 11px;
-            min-width: 500px;
             border-bottom: 1px solid #E0E0E0;
         }
         
@@ -317,6 +363,161 @@
             font-weight: 700;
         }
         
+        .total-score {
+            background: linear-gradient(135deg, #2E7D32, #1B5E20);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 12px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1B5E20;
+            margin: 16px 0 10px 0;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 30px 20px;
+            font-size: 14px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1B5E20;
+        }
+        
+        .modal-text {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #666;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .modal-btn.primary {
+            background: #2E7D32;
+            color: white;
+        }
+        
+        .modal-btn.secondary {
+            background: #E0E0E0;
+            color: #666;
+        }
+        
+        .club-list {
+            margin-bottom: 12px;
+        }
+        
+        .club-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #F5F5F5;
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+        
+        .remove-club-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .add-club-section {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .add-club-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        
+        .add-club-btn {
+            background: #2E7D32;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .reset-btn {
+            width: 100%;
+            padding: 12px;
+            background: #D32F2F;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        
         .records {
             max-height: 400px;
             overflow-y: auto;
@@ -334,11 +535,11 @@
             font-weight: 700;
             color: #1B5E20;
             margin-bottom: 8px;
-            font-size: 15px;
+            font-size: 14px;
         }
         
         .shot-detail {
-            font-size: 12px;
+            font-size: 11px;
             color: #666;
             margin-bottom: 4px;
             padding: 4px 8px;
@@ -346,59 +547,37 @@
             border-radius: 4px;
         }
         
-        .reset-btn {
-            width: 100%;
-            padding: 12px;
-            background: #D32F2F;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 16px;
-        }
-        
-        .reset-btn:active {
-            background: #B71C1C;
-        }
-        
-        .section-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: #1B5E20;
-            margin: 16px 0 10px 0;
-        }
-        
-        .empty-message {
-            text-align: center;
+        .help-text {
+            font-size: 11px;
             color: #999;
-            padding: 30px 20px;
-            font-size: 14px;
-        }
-        
-        .total-score {
-            background: linear-gradient(135deg, #2E7D32, #1B5E20);
-            color: white;
-            padding: 16px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: 700;
-            margin-top: 12px;
+            margin-top: 4px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>⛳ ゴルフ統計</h1>
+            <button class="settings-btn" onclick="openSettings()">⚙️</button>
+            <h1>⛳ ゴルフ統計Pro</h1>
+            <div class="mode-toggle">
+                <button class="mode-btn active" onclick="confirmModeChange('simple')" id="modeSimple">シンプル</button>
+                <button class="mode-btn" onclick="confirmModeChange('advanced')" id="modeAdvanced">アドバンスド</button>
+            </div>
         </div>
         
         <div class="content">
             <div class="hole-header">
-                <div class="hole-info">ホール <span id="currentHole">1</span></div>
-                <div class="shot-number"><span id="shotCount">1</span>打目</div>
+                <div class="hole-info-row">
+                    <div class="hole-info">ホール <span id="currentHole">1</span></div>
+                    <div class="shot-number"><span id="shotCount">1</span>打目</div>
+                </div>
+                <div class="hole-par">
+                    Par: <select class="par-select" id="holePar">
+                        <option value="3">3</option>
+                        <option value="4" selected>4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
             </div>
             
             <div class="input-section">
@@ -415,29 +594,34 @@
                     </div>
                     <div class="input-group">
                         <label class="input-label">番手</label>
-                        <select id="club">
-                            <option value="DR">DR</option>
-                            <option value="3W">3W</option>
-                            <option value="5W">5W</option>
-                            <option value="UT">UT</option>
-                            <option value="3I">3I</option>
-                            <option value="4I">4I</option>
-                            <option value="5I">5I</option>
-                            <option value="6I">6I</option>
-                            <option value="7I">7I</option>
-                            <option value="8I">8I</option>
-                            <option value="9I">9I</option>
-                            <option value="PW">PW</option>
-                            <option value="AW">AW</option>
-                            <option value="SW">SW</option>
-                            <option value="PT">PT</option>
-                        </select>
+                        <select id="club"></select>
                     </div>
                 </div>
                 
                 <div class="input-group">
-                    <label class="input-label">距離 (yd)</label>
-                    <input type="number" id="distance" placeholder="150" min="0" step="1">
+                    <label class="input-label" id="distanceLabel">飛距離 (yd)</label>
+                    <input type="number" id="distanceBefore" placeholder="200" min="0" step="1">
+                    <div class="help-text" id="distanceHelp">打った距離を入力</div>
+                </div>
+                
+                <div class="input-group advanced-only" id="distanceAfterGroup">
+                    <label class="input-label">打った後の残距離</label>
+                    <input type="number" id="distanceAfter" placeholder="5 (yd or m)" min="0" step="0.1">
+                    <div class="help-text">カップインした場合は0、グリーン上ならメートルで入力</div>
+                </div>
+                
+                <div class="input-group advanced-only" id="windGroup">
+                    <label class="input-label">風向き</label>
+                    <select id="wind">
+                        <option value="無風">無風</option>
+                        <option value="フォロー弱">フォロー（弱）</option>
+                        <option value="フォロー強">フォロー（強）</option>
+                        <option value="アゲインスト弱">アゲインスト（弱）</option>
+                        <option value="アゲインスト中">アゲインスト（中）</option>
+                        <option value="アゲインスト強">アゲインスト（強）</option>
+                        <option value="横風弱">横風（弱）</option>
+                        <option value="横風強">横風（強）</option>
+                    </select>
                 </div>
                 
                 <div class="input-group">
@@ -461,6 +645,7 @@
             <div class="tabs">
                 <button type="button" class="tab active" onclick="switchTab('scorecard')">スコア表</button>
                 <button type="button" class="tab" onclick="switchTab('stats')">統計</button>
+                <button type="button" class="tab advanced-only" onclick="switchTab('sg')" id="sgTabBtn">SG分析</button>
                 <button type="button" class="tab" onclick="switchTab('records')">詳細</button>
             </div>
             
@@ -491,9 +676,7 @@
                 </div>
                 
                 <div class="section-title">📏 平均飛距離</div>
-                <div class="stats-grid" id="avgDistanceStats">
-                    <div class="empty-message" style="grid-column: 1/-1;">データなし</div>
-                </div>
+                <div class="stats-grid" id="avgDistanceStats"></div>
                 
                 <div class="section-title">🎯 成績データ</div>
                 <div class="stats-grid">
@@ -508,26 +691,349 @@
                 </div>
                 
                 <div class="section-title">⚠️ ミス傾向</div>
-                <div id="missStats" style="background: #F5F5F5; padding: 12px; border-radius: 8px; font-size: 13px; color: #666;">
+                <div id="missStats" style="background: #F5F5F5; padding: 12px; border-radius: 8px; font-size: 13px; color: #666;"></div>
+            </div>
+            
+            <div id="sgTab" class="tab-content">
+                <div class="section-title">🏆 総合SG</div>
+                <div class="stats-grid">
+                    <div class="stat-card sg-card">
+                        <div class="stat-label">SG: Total</div>
+                        <div class="stat-value" id="sgTotal">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">SG: T2G</div>
+                        <div class="stat-value" id="sgT2G">-</div>
+                    </div>
+                </div>
+                
+                <div class="section-title">📊 カテゴリ別SG</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">SG: OTT</div>
+                        <div class="stat-value" id="sgOTT">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">SG: APP</div>
+                        <div class="stat-value" id="sgAPP">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">SG: ARG</div>
+                        <div class="stat-value" id="sgARG">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">SG: PUT</div>
+                        <div class="stat-value" id="sgPUT">-</div>
+                    </div>
+                </div>
+                
+                <div class="section-title">🎯 番手別SG分析</div>
+                <div id="clubSGStats" style="background: #F5F5F5; padding: 12px; border-radius: 8px; font-size: 13px; color: #666;">
                     データを追加してください
                 </div>
+                
+                <div class="section-title">📊 距離別アプローチ成績</div>
+                <div class="stats-grid" id="distanceApproach"></div>
             </div>
             
             <div id="recordsTab" class="tab-content">
-                <div class="records" id="records">
-                    <div class="empty-message">データがありません</div>
-                </div>
+                <div class="records" id="records"></div>
             </div>
             
             <button type="button" class="reset-btn" onclick="resetAll()">🗑️ 全てリセット</button>
         </div>
     </div>
     
+    <!-- モード切替確認モーダル -->
+    <div class="modal" id="modeConfirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">確認</div>
+            </div>
+            <div class="modal-text" id="modeConfirmText"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn secondary" onclick="closeModeConfirm()">いいえ</button>
+                <button class="modal-btn primary" onclick="executeModeChange()">はい</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 設定モーダル -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">設定</div>
+                <button class="modal-btn secondary" style="padding: 8px 12px;" onclick="closeSettings()">閉じる</button>
+            </div>
+            
+            <div class="section-title">番手カスタマイズ</div>
+            <div class="club-list" id="clubList"></div>
+            <div class="add-club-section">
+                <input type="text" class="add-club-input" id="newClubName" placeholder="番手名（例: 4UT）">
+                <button class="add-club-btn" onclick="addCustomClub()">追加</button>
+            </div>
+        </div>
+    </div>
+    
     <script>
+        // 期待打数テーブル
+        const EXPECTED_STROKES = {
+            0: 1.00, 10: 2.42, 20: 2.44, 30: 2.47, 40: 2.52, 50: 2.57,
+            60: 2.62, 70: 2.67, 80: 2.72, 90: 2.77, 100: 2.82,
+            110: 2.87, 120: 2.92, 130: 2.97, 140: 3.02, 150: 3.07,
+            160: 3.12, 170: 3.17, 180: 3.22, 190: 3.27, 200: 3.32,
+            220: 3.42, 240: 3.52, 260: 3.62, 280: 3.72, 300: 3.82,
+            320: 3.92, 340: 4.02, 360: 4.12, 380: 4.22, 400: 4.32
+        };
+        
+        const PUTT_EXPECTED = {
+            3: 1.20, 5: 1.35, 10: 1.50, 15: 1.65, 20: 1.80,
+            25: 1.95, 30: 2.10, 40: 2.25, 50: 2.40
+        };
+        
+        const LIE_FACTORS = {
+            'ティーグラウンド': 1.00,
+            'フェアウェイ': 1.00,
+            'ラフ': 1.10,
+            'バンカー': 1.15,
+            'グリーン': 1.00
+        };
+        
+        const WIND_FACTORS = {
+            '無風': 1.00,
+            'フォロー弱': 0.98,
+            'フォロー強': 0.95,
+            'アゲインスト弱': 1.05,
+            'アゲインスト中': 1.10,
+            'アゲインスト強': 1.15,
+            '横風弱': 1.03,
+            '横風強': 1.08
+        };
+        
         let holes = [];
         let currentHole = 1;
         let currentShots = [];
         let selectedResult = null;
+        let appMode = 'simple';
+        let pendingMode = null;
+        let customClubs = [];
+        
+        const DEFAULT_CLUBS = ['DR', '3W', '5W', 'UT', '3I', '4I', '5I', '6I', '7I', '8I', '9I', 'PW', 'AW', 'SW', 'PT'];
+        
+        function init() {
+            loadSettings();
+            updateClubSelect();
+            updateModeUI();
+            updateDisplay();
+        }
+        
+        function loadSettings() {
+            const saved = localStorage.getItem('golfStatsSettings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                customClubs = settings.clubs || [];
+                appMode = settings.mode || 'simple';
+            } else {
+                customClubs = [...DEFAULT_CLUBS];
+            }
+            
+            const savedHoles = localStorage.getItem('golfStatsHoles');
+            if (savedHoles) {
+                holes = JSON.parse(savedHoles);
+            }
+        }
+        
+        function saveSettings() {
+            localStorage.setItem('golfStatsSettings', JSON.stringify({ 
+                clubs: customClubs,
+                mode: appMode 
+            }));
+            localStorage.setItem('golfStatsHoles', JSON.stringify(holes));
+        }
+        
+        function updateClubSelect() {
+            const select = document.getElementById('club');
+            select.innerHTML = customClubs.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+        
+        function updateModeUI() {
+            document.getElementById('modeSimple').classList.toggle('active', appMode === 'simple');
+            document.getElementById('modeAdvanced').classList.toggle('active', appMode === 'advanced');
+            
+            document.querySelectorAll('.advanced-only').forEach(el => {
+                el.classList.toggle('show', appMode === 'advanced');
+            });
+            
+            // ラベルとヘルプテキストを切り替え
+            const distLabel = document.getElementById('distanceLabel');
+            const distHelp = document.getElementById('distanceHelp');
+            const distInput = document.getElementById('distanceBefore');
+            
+            if (appMode === 'simple') {
+                distLabel.textContent = '飛距離 (yd)';
+                distHelp.textContent = '打った距離を入力';
+                distInput.placeholder = '200';
+            } else {
+                distLabel.textContent = '打つ前の残距離 (yd)';
+                distHelp.textContent = 'グリーン上の場合はメートルで入力';
+                distInput.placeholder = '150';
+            }
+            
+            saveSettings();
+        }
+        
+        function confirmModeChange(newMode) {
+            if (appMode === newMode) return;
+            
+            if (currentShots.length > 0 || holes.length > 0) {
+                pendingMode = newMode;
+                const text = newMode === 'advanced' 
+                    ? 'アドバンスドモードに切り替えますか？切替時に入力されたデータは失われます。'
+                    : 'シンプルモードに切り替えますか？切替時に入力されたデータは失われます。';
+                document.getElementById('modeConfirmText').textContent = text;
+                document.getElementById('modeConfirmModal').classList.add('active');
+            } else {
+                appMode = newMode;
+                updateModeUI();
+            }
+        }
+        
+        function closeModeConfirm() {
+            document.getElementById('modeConfirmModal').classList.remove('active');
+            pendingMode = null;
+        }
+        
+        function executeModeChange() {
+            holes = [];
+            currentShots = [];
+            currentHole = 1;
+            selectedResult = null;
+            appMode = pendingMode;
+            
+            document.getElementById('currentHole').textContent = 1;
+            document.getElementById('shotCount').textContent = 1;
+            document.getElementById('distanceBefore').value = '';
+            document.getElementById('distanceAfter').value = '';
+            document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
+            
+            updateModeUI();
+            updateCurrentShots();
+            updateDisplay();
+            closeModeConfirm();
+        }
+        
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('active');
+            updateClubList();
+        }
+        
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+        
+        function updateClubList() {
+            const list = document.getElementById('clubList');
+            list.innerHTML = customClubs.map((club, i) => `
+                <div class="club-item">
+                    <span>${club}</span>
+                    <button class="remove-club-btn" onclick="removeClub(${i})">削除</button>
+                </div>
+            `).join('');
+        }
+        
+        function addCustomClub() {
+            const input = document.getElementById('newClubName');
+            const name = input.value.trim();
+            if (name && !customClubs.includes(name)) {
+                customClubs.push(name);
+                input.value = '';
+                updateClubList();
+                updateClubSelect();
+                saveSettings();
+            }
+        }
+        
+        function removeClub(index) {
+            customClubs.splice(index, 1);
+            updateClubList();
+            updateClubSelect();
+            saveSettings();
+        }
+        
+        function getExpectedStrokes(distance, lie = 'フェアウェイ', wind = '無風') {
+            let baseExpected = 0;
+            
+            if (distance <= 0) return 1.0;
+            if (distance >= 400) return 5.3;
+            
+            const distances = Object.keys(EXPECTED_STROKES).map(Number).sort((a, b) => a - b);
+            let lower = 0, upper = 400;
+            
+            for (let i = 0; i < distances.length - 1; i++) {
+                if (distance >= distances[i] && distance <= distances[i + 1]) {
+                    lower = distances[i];
+                    upper = distances[i + 1];
+                    break;
+                }
+            }
+            
+            const ratio = (distance - lower) / (upper - lower);
+            baseExpected = EXPECTED_STROKES[lower] + (EXPECTED_STROKES[upper] - EXPECTED_STROKES[lower]) * ratio;
+            
+            const lieFactor = LIE_FACTORS[lie] || 1.0;
+            const windFactor = WIND_FACTORS[wind] || 1.0;
+            
+            return baseExpected * lieFactor * windFactor;
+        }
+        
+        function getPuttExpected(distanceM) {
+            const distanceFt = distanceM * 3.28084;
+            if (distanceFt <= 3) return 1.20;
+            if (distanceFt >= 50) return 2.40;
+            
+            const distances = Object.keys(PUTT_EXPECTED).map(Number).sort((a, b) => a - b);
+            let lower = 3, upper = 50;
+            
+            for (let i = 0; i < distances.length - 1; i++) {
+                if (distanceFt >= distances[i] && distanceFt <= distances[i + 1]) {
+                    lower = distances[i];
+                    upper = distances[i + 1];
+                    break;
+                }
+            }
+            
+            const ratio = (distanceFt - lower) / (upper - lower);
+            return PUTT_EXPECTED[lower] + (PUTT_EXPECTED[upper] - PUTT_EXPECTED[lower]) * ratio;
+        }
+        
+        function calculateSG(beforeDist, afterDist, beforeLie, afterLie, wind) {
+            let expectedBefore, expectedAfter;
+            
+            if (beforeLie === 'グリーン') {
+                expectedBefore = getPuttExpected(beforeDist);
+            } else {
+                expectedBefore = getExpectedStrokes(beforeDist, beforeLie, wind);
+            }
+            
+            if (afterDist === 0) {
+                expectedAfter = 0;
+            } else if (afterLie === 'グリーン') {
+                expectedAfter = getPuttExpected(afterDist);
+            } else {
+                expectedAfter = getExpectedStrokes(afterDist, afterLie, wind);
+            }
+            
+            return expectedBefore - (1 + expectedAfter);
+        }
+        
+        function getSGCategory(shotNum, holePar, distance, lie) {
+            if (lie === 'グリーン') return 'PUT';
+            if (shotNum === 1) {
+                return holePar === 3 ? 'APP' : 'OTT';
+            }
+            if (distance <= 30) return 'ARG';
+            return 'APP';
+        }
         
         function selectResult(btn, result) {
             selectedResult = result;
@@ -538,22 +1044,45 @@
         function addShot() {
             const situation = document.getElementById('situation').value;
             const club = document.getElementById('club').value;
-            const distance = parseFloat(document.getElementById('distance').value);
+            const distanceBefore = parseFloat(document.getElementById('distanceBefore').value);
+            const wind = appMode === 'advanced' ? document.getElementById('wind').value : '無風';
             
-            if (!distance || !selectedResult) {
-                alert('距離と結果を入力してください');
+            if (!distanceBefore || !selectedResult) {
+                alert('打つ前の残距離と結果を入力してください');
                 return;
+            }
+            
+            let distanceAfter = 0;
+            let afterLie = 'グリーン';
+            
+            if (appMode === 'advanced') {
+                const afterInput = document.getElementById('distanceAfter').value;
+                if (afterInput === '' || afterInput === null) {
+                    alert('打った後の残距離を入力してください（カップインの場合は0）');
+                    return;
+                }
+                distanceAfter = parseFloat(afterInput);
+                
+                if (distanceAfter > 0) {
+                    afterLie = currentShots.length === 0 ? 'フェアウェイ' : situation;
+                }
             }
             
             currentShots.push({
                 shotNumber: currentShots.length + 1,
                 situation,
                 club,
-                distance,
+                distanceBefore,
+                distanceAfter: appMode === 'advanced' ? distanceAfter : null,
+                afterLie: appMode === 'advanced' ? afterLie : null,
+                wind,
                 result: selectedResult
             });
             
-            document.getElementById('distance').value = '';
+            document.getElementById('distanceBefore').value = '';
+            if (appMode === 'advanced') {
+                document.getElementById('distanceAfter').value = '';
+            }
             document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
             selectedResult = null;
             
@@ -575,11 +1104,19 @@
             }
             
             container.style.display = 'block';
-            container.innerHTML = currentShots.map(s => `
-                <div class="shot-item">
-                    ${s.shotNumber}打目: ${s.situation} → ${s.club} (${s.distance}yd) → ${s.result}
-                </div>
-            `).join('');
+            container.innerHTML = currentShots.map(s => {
+                const beforeLabel = s.situation === 'グリーン' ? 'm' : 'yd';
+                const afterLabel = s.afterLie === 'グリーン' ? 'm' : 'yd';
+                let distText = `${s.distanceBefore}${beforeLabel}`;
+                if (appMode === 'advanced' && s.distanceAfter !== null) {
+                    distText += ` → ${s.distanceAfter === 0 ? 'カップイン' : s.distanceAfter + afterLabel}`;
+                }
+                return `
+                    <div class="shot-item">
+                        ${s.shotNumber}打目: ${s.situation} → ${s.club} (${distText}) → ${s.result}
+                    </div>
+                `;
+            }).join('');
         }
         
         function finishHole() {
@@ -588,10 +1125,12 @@
                 return;
             }
             
+            const holePar = parseInt(document.getElementById('holePar').value);
             const puttCount = currentShots.filter(s => s.club === 'PT').length;
             
             holes.push({
                 hole: currentHole,
+                par: holePar,
                 shots: [...currentShots],
                 score: currentShots.length,
                 putts: puttCount
@@ -604,12 +1143,17 @@
             document.getElementById('currentHole').textContent = currentHole;
             document.getElementById('shotCount').textContent = 1;
             document.getElementById('situation').value = 'ティーグラウンド';
-            document.getElementById('distance').value = '';
+            document.getElementById('holePar').value = '4';
+            document.getElementById('distanceBefore').value = '';
+            if (appMode === 'advanced') {
+                document.getElementById('distanceAfter').value = '';
+            }
             document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
             selectedResult = null;
             
             updateCurrentShots();
             updateDisplay();
+            saveSettings();
         }
         
         function switchTab(tabName) {
@@ -631,12 +1175,16 @@
                 document.getElementById('situation').value = 'ティーグラウンド';
                 updateCurrentShots();
                 updateDisplay();
+                saveSettings();
             }
         }
         
         function updateDisplay() {
             updateScorecard();
             updateStats();
+            if (appMode === 'advanced') {
+                updateSGStats();
+            }
             updateRecords();
         }
         
@@ -648,21 +1196,14 @@
                 return;
             }
             
-            const holeScores = {};
-            const holePutts = {};
+            const holeScores = {}, holePutts = {};
             holes.forEach(h => {
                 holeScores[h.hole] = h.score;
                 holePutts[h.hole] = h.putts;
             });
             
-            const frontNine = [];
-            const backNine = [];
-            const frontPutts = [];
-            const backPutts = [];
-            let frontTotal = 0;
-            let backTotal = 0;
-            let frontPuttTotal = 0;
-            let backPuttTotal = 0;
+            const frontNine = [], backNine = [], frontPutts = [], backPutts = [];
+            let frontTotal = 0, backTotal = 0, frontPuttTotal = 0, backPuttTotal = 0;
             
             for (let i = 1; i <= 9; i++) {
                 frontNine.push(holeScores[i] || '-');
@@ -732,32 +1273,38 @@
                 return;
             }
             
-            const allShots = holes.flatMap(h => h.shots.map(s => ({...s, hole: h.hole})));
+            const allShots = holes.flatMap(h => h.shots);
             
             const avgScore = (holes.reduce((sum, h) => sum + h.score, 0) / holes.length).toFixed(1);
             document.getElementById('avgScore').textContent = avgScore;
             document.getElementById('totalHoles').textContent = holes.length;
             
-            const teeShots = allShots.filter(s => s.situation === 'ティーグラウンド' && s.club === 'DR');
-            const fwHits = teeShots.filter(s => ['◎', '○'].includes(s.result)).length;
-            const fwRate = teeShots.length > 0 ? ((fwHits / teeShots.length) * 100).toFixed(0) : '-';
+            const par4or5Holes = holes.filter(h => h.par >= 4);
+            let fwKeeps = 0;
+            par4or5Holes.forEach(h => {
+                if (h.shots.length >= 2 && h.shots[0].club === 'DR') {
+                    if (['◎', '○'].includes(h.shots[0].result) && h.shots[1].situation === 'フェアウェイ') {
+                        fwKeeps++;
+                    }
+                }
+            });
+            const fwRate = par4or5Holes.length > 0 ? ((fwKeeps / par4or5Holes.length) * 100).toFixed(0) : '-';
             document.getElementById('fwRate').textContent = fwRate === '-' ? '-' : fwRate + '%';
             
             let parOns = 0;
             holes.forEach(h => {
                 const greenShots = h.shots.filter(s => s.situation === 'グリーン');
-                if (greenShots.length > 0 && h.score - greenShots.length <= 2) {
+                if (greenShots.length > 0 && h.score - greenShots.length <= h.par - 2) {
                     parOns++;
                 }
             });
             const girRate = ((parOns / holes.length) * 100).toFixed(0);
             document.getElementById('girRate').textContent = girRate + '%';
             
-            let upDowns = 0;
-            let upDownChances = 0;
+            let upDowns = 0, upDownChances = 0;
             holes.forEach(h => {
                 const greenShots = h.shots.filter(s => s.situation === 'グリーン');
-                if (greenShots.length > 0 && h.score - greenShots.length > 2) {
+                if (greenShots.length > 0 && h.score - greenShots.length > h.par - 2) {
                     upDownChances++;
                     if (h.putts === 1) upDowns++;
                 }
@@ -765,8 +1312,7 @@
             const upDownRate = upDownChances > 0 ? ((upDowns / upDownChances) * 100).toFixed(0) : '-';
             document.getElementById('upDownRate').textContent = upDownRate === '-' ? '-' : upDownRate + '%';
             
-            let sandSaves = 0;
-            let sandChances = 0;
+            let sandSaves = 0, sandChances = 0;
             holes.forEach(h => {
                 const bunkerShots = h.shots.filter(s => s.situation === 'バンカー');
                 if (bunkerShots.length > 0) {
@@ -783,9 +1329,9 @@
             
             const clubDistances = {};
             allShots.forEach(s => {
-                if (s.club !== 'PT') {
+                if (s.club !== 'PT' && s.distanceBefore) {
                     if (!clubDistances[s.club]) clubDistances[s.club] = [];
-                    clubDistances[s.club].push(s.distance);
+                    clubDistances[s.club].push(s.distanceBefore);
                 }
             });
             
@@ -806,6 +1352,103 @@
             document.getElementById('missStats').innerHTML = `ミスショット: ${misses}回 (${missRate}%)`;
         }
         
+        function updateSGStats() {
+            if (holes.length === 0) {
+                document.getElementById('sgTotal').textContent = '-';
+                document.getElementById('sgOTT').textContent = '-';
+                document.getElementById('sgAPP').textContent = '-';
+                document.getElementById('sgARG').textContent = '-';
+                document.getElementById('sgPUT').textContent = '-';
+                document.getElementById('sgT2G').textContent = '-';
+                document.getElementById('clubSGStats').innerHTML = 'データを追加してください';
+                document.getElementById('distanceApproach').innerHTML = '<div class="empty-message" style="grid-column: 1/-1;">データなし</div>';
+                return;
+            }
+            
+            let sgOTT = 0, sgAPP = 0, sgARG = 0, sgPUT = 0;
+            const clubSGs = {}; // 番手別SG集計
+            
+            holes.forEach(h => {
+                h.shots.forEach(shot => {
+                    if (shot.distanceAfter === null) return;
+                    
+                    const beforeDist = shot.distanceBefore;
+                    const afterDist = shot.distanceAfter;
+                    const beforeLie = shot.situation;
+                    const afterLie = shot.afterLie || 'グリーン';
+                    const wind = shot.wind || '無風';
+                    
+                    const sg = calculateSG(beforeDist, afterDist, beforeLie, afterLie, wind);
+                    const category = getSGCategory(shot.shotNumber, h.par, shot.distanceBefore, shot.situation);
+                    
+                    if (category === 'OTT') sgOTT += sg;
+                    else if (category === 'APP') sgAPP += sg;
+                    else if (category === 'ARG') sgARG += sg;
+                    else if (category === 'PUT') sgPUT += sg;
+                    
+                    // 番手別SG集計
+                    if (!clubSGs[shot.club]) {
+                        clubSGs[shot.club] = { total: 0, count: 0, category };
+                    }
+                    clubSGs[shot.club].total += sg;
+                    clubSGs[shot.club].count++;
+                });
+            });
+            
+            const sgT2G = sgOTT + sgAPP + sgARG;
+            const sgTotal = sgT2G + sgPUT;
+            
+            document.getElementById('sgTotal').textContent = sgTotal.toFixed(2);
+            document.getElementById('sgOTT').textContent = sgOTT.toFixed(2);
+            document.getElementById('sgAPP').textContent = sgAPP.toFixed(2);
+            document.getElementById('sgARG').textContent = sgARG.toFixed(2);
+            document.getElementById('sgPUT').textContent = sgPUT.toFixed(2);
+            document.getElementById('sgT2G').textContent = sgT2G.toFixed(2);
+            
+            // 番手別SG表示
+            let clubSGHTML = '';
+            Object.keys(clubSGs).sort().forEach(club => {
+                const avg = (clubSGs[club].total / clubSGs[club].count).toFixed(3);
+                const color = parseFloat(avg) >= 0 ? '#2E7D32' : '#D32F2F';
+                const sign = parseFloat(avg) >= 0 ? '+' : '';
+                clubSGHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #E0E0E0;">
+                        <span style="font-weight: 600;">${club}</span>
+                        <span style="color: ${color}; font-weight: 700;">${sign}${avg}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('clubSGStats').innerHTML = clubSGHTML || 'データなし';
+            
+            // 距離別アプローチ
+            const distRanges = {'~100yd': [], '100-150yd': [], '150-200yd': [], '200yd~': []};
+            holes.forEach(h => {
+                h.shots.forEach(s => {
+                    if (s.situation !== 'グリーン' && s.situation !== 'ティーグラウンド') {
+                        const d = s.distanceBefore;
+                        if (d < 100) distRanges['~100yd'].push(s);
+                        else if (d < 150) distRanges['100-150yd'].push(s);
+                        else if (d < 200) distRanges['150-200yd'].push(s);
+                        else distRanges['200yd~'].push(s);
+                    }
+                });
+            });
+            
+            let distHTML = '';
+            Object.keys(distRanges).forEach(range => {
+                const shots = distRanges[range];
+                const goodShots = shots.filter(s => ['◎', '○'].includes(s.result)).length;
+                const rate = shots.length > 0 ? ((goodShots / shots.length) * 100).toFixed(0) : '-';
+                distHTML += `
+                    <div class="stat-card">
+                        <div class="stat-label">${range}</div>
+                        <div class="stat-value">${rate === '-' ? '-' : rate + '%'}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('distanceApproach').innerHTML = distHTML || '<div class="empty-message" style="grid-column: 1/-1;">データなし</div>';
+        }
+        
         function updateRecords() {
             const recordsDiv = document.getElementById('records');
             
@@ -814,18 +1457,26 @@
             } else {
                 recordsDiv.innerHTML = holes.map(h => `
                     <div class="hole-record">
-                        <div class="hole-record-header">ホール ${h.hole} - ${h.score}打 (パット${h.putts})</div>
-                        ${h.shots.map(s => `
-                            <div class="shot-detail">
-                                ${s.shotNumber}打目: ${s.situation} → ${s.club} (${s.distance}yd) → ${s.result}
-                            </div>
-                        `).join('')}
+                        <div class="hole-record-header">ホール ${h.hole} - Par${h.par} - ${h.score}打 (パット${h.putts})</div>
+                        ${h.shots.map(s => {
+                            const beforeLabel = s.situation === 'グリーン' ? 'm' : 'yd';
+                            const afterLabel = s.afterLie === 'グリーン' ? 'm' : 'yd';
+                            let distText = `${s.distanceBefore}${beforeLabel}`;
+                            if (s.distanceAfter !== null) {
+                                distText += ` → ${s.distanceAfter === 0 ? 'カップイン' : s.distanceAfter + afterLabel}`;
+                            }
+                            return `
+                                <div class="shot-detail">
+                                    ${s.shotNumber}打目: ${s.situation} → ${s.club} (${distText}) → ${s.result}
+                                </div>
+                            `;
+                        }).join('')}
                     </div>
                 `).join('');
             }
         }
         
-        updateDisplay();
+        init();
     </script>
 </body>
 </html>
