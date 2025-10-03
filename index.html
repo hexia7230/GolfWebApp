@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ゴルフ統計Pro</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -22,15 +23,27 @@
             max-width: 480px;
             margin: 0 auto;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
+            animation: slideIn 0.4s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .header {
             background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
             color: white;
-            padding: 20px;
+            padding: 24px 20px;
             text-align: center;
             position: relative;
         }
@@ -38,23 +51,30 @@
         .settings-btn {
             position: absolute;
             right: 20px;
-            top: 20px;
+            top: 24px;
             background: rgba(255,255,255,0.2);
             border: none;
             color: white;
             padding: 8px 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .settings-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
         }
         
         h1 {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
+            margin-bottom: 12px;
         }
         
         .mode-toggle {
-            margin-top: 10px;
+            margin-top: 12px;
             display: flex;
             gap: 8px;
             justify-content: center;
@@ -64,120 +84,147 @@
             background: rgba(255,255,255,0.2);
             border: none;
             color: white;
-            padding: 6px 16px;
-            border-radius: 6px;
+            padding: 8px 20px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
+            transition: all 0.3s;
         }
         
         .mode-btn.active {
             background: white;
             color: #2E7D32;
+            transform: scale(1.05);
         }
         
         .content {
-            padding: 16px;
+            padding: 20px;
         }
         
         .hole-header {
             background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 16px;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .hole-info-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
         
         .hole-info {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             color: #1B5E20;
         }
         
         .shot-number {
-            font-size: 16px;
+            font-size: 18px;
             color: #2E7D32;
             font-weight: 600;
         }
         
         .hole-par {
-            font-size: 13px;
+            font-size: 14px;
             color: #666;
         }
         
         .par-select {
-            padding: 4px 8px;
-            border: 1px solid #2E7D32;
-            border-radius: 4px;
+            padding: 6px 12px;
+            border: 2px solid #2E7D32;
+            border-radius: 8px;
             margin-left: 8px;
+            background: white;
+            transition: all 0.3s;
+        }
+        
+        .par-select:focus {
+            outline: none;
+            border-color: #1B5E20;
+            box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
         }
         
         .input-section {
-            background: #F5F5F5;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 16px;
+            background: #F8F9FA;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
         }
         
         .input-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 12px;
+            gap: 12px;
+            margin-bottom: 16px;
         }
         
         .input-group {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
         
         .input-label {
             font-size: 13px;
             font-weight: 600;
             color: #555;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             display: block;
         }
         
         select, input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 2px solid #E0E0E0;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 15px;
             background: white;
+            transition: all 0.3s;
         }
         
         select:focus, input:focus {
             outline: none;
             border-color: #2E7D32;
+            box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+            transform: translateY(-2px);
         }
         
         .result-btns {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 10px;
         }
         
         .result-btn {
-            padding: 12px;
+            padding: 16px;
             border: 2px solid #E0E0E0;
             background: white;
             color: #666;
-            border-radius: 8px;
-            font-size: 20px;
+            border-radius: 12px;
+            font-size: 22px;
             cursor: pointer;
             font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .result-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
         .result-btn.active {
             border-color: #2E7D32;
             background: #2E7D32;
             color: white;
+            transform: scale(1.05);
         }
         
         .advanced-only {
@@ -186,83 +233,111 @@
         
         .advanced-only.show {
             display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 500px;
+            }
         }
         
         .action-btns {
             display: grid;
-            gap: 10px;
-            margin-bottom: 16px;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .add-shot-btn, .finish-hole-btn {
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
         }
         
         .add-shot-btn {
-            padding: 14px;
-            background: #2E7D32;
+            background: linear-gradient(135deg, #2E7D32, #1B5E20);
             color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
+        }
+        
+        .add-shot-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(46,125,50,0.3);
         }
         
         .finish-hole-btn {
-            padding: 14px;
-            background: #1976D2;
+            background: linear-gradient(135deg, #1976D2, #1565C0);
             color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
+        }
+        
+        .finish-hole-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(25,118,210,0.3);
         }
         
         .current-shots {
-            background: #FFF9C4;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            max-height: 180px;
+            background: linear-gradient(135deg, #FFF9C4, #FFF59D);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            max-height: 200px;
             overflow-y: auto;
             border: 2px solid #FDD835;
+            animation: fadeIn 0.3s;
         }
         
         .shot-item {
-            padding: 8px;
+            padding: 12px;
             background: white;
-            border-radius: 6px;
-            margin-bottom: 6px;
-            font-size: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
             color: #333;
-            border-left: 3px solid #2E7D32;
+            border-left: 4px solid #2E7D32;
+            animation: slideIn 0.3s;
         }
         
         .tabs {
             display: flex;
             gap: 0;
-            margin: 16px 0;
+            margin: 20px 0;
             background: #F5F5F5;
-            border-radius: 8px;
-            padding: 4px;
+            border-radius: 12px;
+            padding: 6px;
             overflow-x: auto;
         }
         
         .tab {
             flex: 1;
-            padding: 10px 8px;
+            padding: 12px 10px;
             background: transparent;
             border: none;
             color: #666;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 8px;
             white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            background: rgba(46,125,50,0.1);
         }
         
         .tab.active {
             background: white;
             color: #2E7D32;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
         }
         
         .tab-content {
@@ -271,31 +346,38 @@
         
         .tab-content.active {
             display: block;
+            animation: fadeIn 0.3s;
         }
         
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
         
         .stat-card {
-            background: #F5F5F5;
-            padding: 12px;
-            border-radius: 10px;
+            background: #F8F9FA;
+            padding: 16px;
+            border-radius: 12px;
             text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
         
         .stat-label {
-            font-size: 10px;
+            font-size: 11px;
             color: #666;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             font-weight: 600;
         }
         
         .stat-value {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 700;
             color: #2E7D32;
         }
@@ -309,34 +391,259 @@
             color: white;
         }
         
-        .sg-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1B5E20;
+            margin: 20px 0 12px 0;
         }
         
-        .sg-card .stat-label,
-        .sg-card .stat-value {
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1B5E20;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .heatmap {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1B5E20;
+        }
+        
+        .close-modal-btn {
+            background: #E0E0E0;
+            border: none;
+            color: #666;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .close-modal-btn:hover {
+            background: #BDBDBD;
+        }
+        
+        .baseline-section {
+            background: #F8F9FA;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .baseline-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        
+        .baseline-item:last-child {
+            border-bottom: none;
+        }
+        
+        .club-list {
+            margin-bottom: 12px;
+        }
+        
+        .club-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #F5F5F5;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+        
+        .club-item:hover {
+            background: #E8F5E9;
+        }
+        
+        .remove-club-btn {
+            background: #FF5722;
             color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .remove-club-btn:hover {
+            background: #E64A19;
+            transform: scale(1.05);
+        }
+        
+        .add-club-section {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .add-club-input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+        }
+        
+        .add-club-btn {
+            background: #2E7D32;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .add-club-btn:hover {
+            background: #1B5E20;
+            transform: translateY(-2px);
+        }
+        
+        .reset-btn, .reset-baseline-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: all 0.3s;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(135deg, #D32F2F, #B71C1C);
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(211,47,47,0.3);
+        }
+        
+        .reset-baseline-btn {
+            background: #FF9800;
+            color: white;
+        }
+        
+        .reset-baseline-btn:hover {
+            background: #F57C00;
+            transform: translateY(-2px);
+        }
+        
+        .help-text {
+            font-size: 11px;
+            color: #999;
+            margin-top: 6px;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-size: 14px;
         }
         
         .scorecard {
             background: white;
             border: 2px solid #2E7D32;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow-x: auto;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
         
         .scorecard-header, .scorecard-row {
             display: grid;
-            grid-template-columns: 45px repeat(9, 1fr) 55px;
+            grid-template-columns: 50px repeat(9, 1fr) 60px;
             gap: 1px;
-            font-size: 10px;
-            min-width: 500px;
+            font-size: 11px;
+            min-width: 550px;
         }
         
         .scorecard-header {
             background: #E8F5E9;
-            padding: 8px;
+            padding: 10px;
             border-bottom: 2px solid #2E7D32;
             font-weight: 700;
             color: #1B5E20;
@@ -347,7 +654,7 @@
         }
         
         .scorecard-cell {
-            padding: 8px 4px;
+            padding: 10px 6px;
             text-align: center;
             background: white;
         }
@@ -366,155 +673,11 @@
         .total-score {
             background: linear-gradient(135deg, #2E7D32, #1B5E20);
             color: white;
-            padding: 16px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 16px;
-            font-weight: 700;
-            margin-top: 12px;
-        }
-        
-        .section-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: #1B5E20;
-            margin: 16px 0 10px 0;
-        }
-        
-        .empty-message {
-            text-align: center;
-            color: #999;
-            padding: 30px 20px;
-            font-size: 14px;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
             padding: 20px;
-        }
-        
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal-content {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            max-width: 400px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        
-        .modal-title {
+            border-radius: 12px;
+            text-align: center;
             font-size: 18px;
             font-weight: 700;
-            color: #1B5E20;
-        }
-        
-        .modal-text {
-            margin-bottom: 20px;
-            line-height: 1.6;
-            color: #666;
-        }
-        
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .modal-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .modal-btn.primary {
-            background: #2E7D32;
-            color: white;
-        }
-        
-        .modal-btn.secondary {
-            background: #E0E0E0;
-            color: #666;
-        }
-        
-        .club-list {
-            margin-bottom: 12px;
-        }
-        
-        .club-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background: #F5F5F5;
-            border-radius: 6px;
-            margin-bottom: 6px;
-        }
-        
-        .remove-club-btn {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        
-        .add-club-section {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        
-        .add-club-input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-        }
-        
-        .add-club-btn {
-            background: #2E7D32;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        
-        .reset-btn {
-            width: 100%;
-            padding: 12px;
-            background: #D32F2F;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
             margin-top: 16px;
         }
         
@@ -524,33 +687,42 @@
         }
         
         .hole-record {
-            background: #F5F5F5;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 8px;
+            background: #F8F9FA;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
             border-left: 4px solid #2E7D32;
+            transition: all 0.3s;
+        }
+        
+        .hole-record:hover {
+            background: #E8F5E9;
+            transform: translateX(4px);
         }
         
         .hole-record-header {
             font-weight: 700;
             color: #1B5E20;
-            margin-bottom: 8px;
-            font-size: 14px;
+            margin-bottom: 10px;
+            font-size: 15px;
         }
         
         .shot-detail {
-            font-size: 11px;
+            font-size: 12px;
             color: #666;
-            margin-bottom: 4px;
-            padding: 4px 8px;
+            margin-bottom: 6px;
+            padding: 6px 10px;
             background: white;
-            border-radius: 4px;
+            border-radius: 6px;
         }
         
-        .help-text {
-            font-size: 11px;
-            color: #999;
-            margin-top: 4px;
+        .sg-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .sg-card .stat-label,
+        .sg-card .stat-value {
+            color: white;
         }
     </style>
 </head>
@@ -600,14 +772,35 @@
                 
                 <div class="input-group">
                     <label class="input-label" id="distanceLabel">飛距離 (yd)</label>
-                    <input type="number" id="distanceBefore" placeholder="200" min="0" step="1">
+                    <input type="number" id="distanceBefore" placeholder="200" min="0" step="0.1">
                     <div class="help-text" id="distanceHelp">打った距離を入力</div>
                 </div>
                 
                 <div class="input-group advanced-only" id="distanceAfterGroup">
-                    <label class="input-label">打った後の残距離</label>
-                    <input type="number" id="distanceAfter" placeholder="5 (yd or m)" min="0" step="0.1">
+                    <label class="input-label">打った後の残距離 (yd/m)</label>
+                    <input type="number" id="distanceAfter" placeholder="5" min="0" step="0.1">
                     <div class="help-text">カップインした場合は0、グリーン上ならメートルで入力</div>
+                </div>
+                
+                <div class="input-group advanced-only" id="slopeGroup">
+                    <label class="input-label">傾斜</label>
+                    <select id="slope">
+                        <option value="平坦">平坦</option>
+                        <option value="上り軽">上り（軽）</option>
+                        <option value="上り強">上り（強）</option>
+                        <option value="下り軽">下り（軽）</option>
+                        <option value="下り強">下り（強）</option>
+                    </select>
+                </div>
+                
+                <div class="input-group advanced-only" id="greenConditionGroup">
+                    <label class="input-label">芝の状態</label>
+                    <select id="greenCondition">
+                        <option value="良好">良好</option>
+                        <option value="普通">普通</option>
+                        <option value="重い">重い</option>
+                        <option value="速い">速い</option>
+                    </select>
                 </div>
                 
                 <div class="input-group advanced-only" id="windGroup">
@@ -645,6 +838,7 @@
             <div class="tabs">
                 <button type="button" class="tab active" onclick="switchTab('scorecard')">スコア表</button>
                 <button type="button" class="tab" onclick="switchTab('stats')">統計</button>
+                <button type="button" class="tab" onclick="switchTab('graphs')">グラフ</button>
                 <button type="button" class="tab advanced-only" onclick="switchTab('sg')" id="sgTabBtn">SG分析</button>
                 <button type="button" class="tab" onclick="switchTab('records')">詳細</button>
             </div>
@@ -694,6 +888,23 @@
                 <div id="missStats" style="background: #F5F5F5; padding: 12px; border-radius: 8px; font-size: 13px; color: #666;"></div>
             </div>
             
+            <div id="graphsTab" class="tab-content">
+                <div class="chart-container">
+                    <div class="chart-title">📈 スコア推移</div>
+                    <canvas id="scoreChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">📊 スコア分布</div>
+                    <canvas id="scoreDistChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">🎯 距離別成功率ヒートマップ</div>
+                    <div class="heatmap" id="heatmap"></div>
+                </div>
+            </div>
+            
             <div id="sgTab" class="tab-content">
                 <div class="section-title">🏆 総合SG</div>
                 <div class="stats-grid">
@@ -727,43 +938,32 @@
                     </div>
                 </div>
                 
+                <div class="section-title">🎯 個人ベースライン比較</div>
+                <div class="stat-card highlight">
+                    <div class="stat-label">vs 自分の平均</div>
+                    <div class="stat-value" id="sgVsBaseline">-</div>
+                </div>
+                <div class="help-text" style="text-align: center; margin-top: 8px;">10ラウンド以上で有効</div>
+                
                 <div class="section-title">🎯 番手別SG分析</div>
                 <div id="clubSGStats" style="background: #F5F5F5; padding: 12px; border-radius: 8px; font-size: 13px; color: #666;">
                     データを追加してください
                 </div>
-                
-                <div class="section-title">📊 距離別アプローチ成績</div>
-                <div class="stats-grid" id="distanceApproach"></div>
             </div>
             
             <div id="recordsTab" class="tab-content">
                 <div class="records" id="records"></div>
             </div>
             
-            <button type="button" class="reset-btn" onclick="resetAll()">🗑️ 全てリセット</button>
+            <button type="button" class="reset-btn" onclick="resetAll()">🗑️ ラウンド終了</button>
         </div>
     </div>
     
-    <!-- モード切替確認モーダル -->
-    <div class="modal" id="modeConfirmModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">確認</div>
-            </div>
-            <div class="modal-text" id="modeConfirmText"></div>
-            <div class="modal-buttons">
-                <button class="modal-btn secondary" onclick="closeModeConfirm()">いいえ</button>
-                <button class="modal-btn primary" onclick="executeModeChange()">はい</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 設定モーダル -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title">設定</div>
-                <button class="modal-btn secondary" style="padding: 8px 12px;" onclick="closeSettings()">閉じる</button>
+                <button class="close-modal-btn" onclick="closeSettings()">閉じる</button>
             </div>
             
             <div class="section-title">番手カスタマイズ</div>
@@ -772,43 +972,51 @@
                 <input type="text" class="add-club-input" id="newClubName" placeholder="番手名（例: 4UT）">
                 <button class="add-club-btn" onclick="addCustomClub()">追加</button>
             </div>
+            
+            <div class="section-title" style="margin-top: 24px;">個人ベースライン</div>
+            <div class="baseline-section">
+                <div id="baselineDisplay"></div>
+            </div>
+            <button class="reset-baseline-btn" onclick="resetBaseline()">ベースラインをリセット</button>
+            <div class="help-text">10ラウンド以上でベースラインが自動生成されます</div>
+        </div>
+    </div>
+    
+    <div class="modal" id="modeConfirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">確認</div>
+            </div>
+            <div style="margin-bottom: 20px; color: #666;" id="modeConfirmText"></div>
+            <div style="display: flex; gap: 10px;">
+                <button style="flex: 1; padding: 12px; background: #E0E0E0; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;" onclick="closeModeConfirm()">いいえ</button>
+                <button style="flex: 1; padding: 12px; background: #2E7D32; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;" onclick="executeModeChange()">はい</button>
+            </div>
         </div>
     </div>
     
     <script>
-        // 期待打数テーブル
-        const EXPECTED_STROKES = {
-            0: 1.00, 10: 2.42, 20: 2.44, 30: 2.47, 40: 2.52, 50: 2.57,
-            60: 2.62, 70: 2.67, 80: 2.72, 90: 2.77, 100: 2.82,
-            110: 2.87, 120: 2.92, 130: 2.97, 140: 3.02, 150: 3.07,
-            160: 3.12, 170: 3.17, 180: 3.22, 190: 3.27, 200: 3.32,
-            220: 3.42, 240: 3.52, 260: 3.62, 280: 3.72, 300: 3.82,
-            320: 3.92, 340: 4.02, 360: 4.12, 380: 4.22, 400: 4.32
+        const EXPECTED_STROKES_DETAILED = {};
+        for (let d = 0; d <= 400; d += 5) {
+            if (d <= 100) EXPECTED_STROKES_DETAILED[d] = 1.00 + (d / 100) * 1.82;
+            else if (d <= 200) EXPECTED_STROKES_DETAILED[d] = 2.82 + ((d - 100) / 100) * 0.50;
+            else EXPECTED_STROKES_DETAILED[d] = 3.32 + ((d - 200) / 200) * 1.00;
+        }
+        
+        const PUTT_EXPECTED_DETAILED = {};
+        for (let d = 1; d <= 15; d += 0.5) {
+            PUTT_EXPECTED_DETAILED[d] = 1.20 + (d / 15) * 0.45;
+        }
+        
+        const SLOPE_FACTORS = {
+            '平坦': 1.00, '上り軽': 1.05, '上り強': 1.12, '下り軽': 0.97, '下り強': 0.92
         };
         
-        const PUTT_EXPECTED = {
-            3: 1.20, 5: 1.35, 10: 1.50, 15: 1.65, 20: 1.80,
-            25: 1.95, 30: 2.10, 40: 2.25, 50: 2.40
+        const GREEN_FACTORS = {
+            '良好': 1.00, '普通': 1.03, '重い': 1.08, '速い': 0.95
         };
         
-        const LIE_FACTORS = {
-            'ティーグラウンド': 1.00,
-            'フェアウェイ': 1.00,
-            'ラフ': 1.10,
-            'バンカー': 1.15,
-            'グリーン': 1.00
-        };
-        
-        const WIND_FACTORS = {
-            '無風': 1.00,
-            'フォロー弱': 0.98,
-            'フォロー強': 0.95,
-            'アゲインスト弱': 1.05,
-            'アゲインスト中': 1.10,
-            'アゲインスト強': 1.15,
-            '横風弱': 1.03,
-            '横風強': 1.08
-        };
+        const DEFAULT_CLUBS = ['DR', '3W', '5W', 'UT', '3I', '4I', '5I', '6I', '7I', '8I', '9I', 'PW', 'AW', 'SW', 'PT'];
         
         let holes = [];
         let currentHole = 1;
@@ -817,38 +1025,35 @@
         let appMode = 'simple';
         let pendingMode = null;
         let customClubs = [];
-        
-        const DEFAULT_CLUBS = ['DR', '3W', '5W', 'UT', '3I', '4I', '5I', '6I', '7I', '8I', '9I', 'PW', 'AW', 'SW', 'PT'];
+        let personalBaseline = null;
+        let scoreChart = null;
+        let distChart = null;
         
         function init() {
-            loadSettings();
+            loadData();
             updateClubSelect();
             updateModeUI();
             updateDisplay();
+            calculateBaseline();
         }
         
-        function loadSettings() {
-            const saved = localStorage.getItem('golfStatsSettings');
+        function loadData() {
+            const saved = localStorage.getItem('golfStatsData');
             if (saved) {
-                const settings = JSON.parse(saved);
-                customClubs = settings.clubs || [];
-                appMode = settings.mode || 'simple';
+                const data = JSON.parse(saved);
+                holes = data.holes || [];
+                customClubs = data.clubs || [...DEFAULT_CLUBS];
+                appMode = data.mode || 'simple';
+                personalBaseline = data.baseline || null;
             } else {
                 customClubs = [...DEFAULT_CLUBS];
             }
-            
-            const savedHoles = localStorage.getItem('golfStatsHoles');
-            if (savedHoles) {
-                holes = JSON.parse(savedHoles);
-            }
         }
         
-        function saveSettings() {
-            localStorage.setItem('golfStatsSettings', JSON.stringify({ 
-                clubs: customClubs,
-                mode: appMode 
+        function saveData() {
+            localStorage.setItem('golfStatsData', JSON.stringify({
+                holes, clubs: customClubs, mode: appMode, baseline: personalBaseline
             }));
-            localStorage.setItem('golfStatsHoles', JSON.stringify(holes));
         }
         
         function updateClubSelect() {
@@ -864,7 +1069,6 @@
                 el.classList.toggle('show', appMode === 'advanced');
             });
             
-            // ラベルとヘルプテキストを切り替え
             const distLabel = document.getElementById('distanceLabel');
             const distHelp = document.getElementById('distanceHelp');
             const distInput = document.getElementById('distanceBefore');
@@ -878,8 +1082,6 @@
                 distHelp.textContent = 'グリーン上の場合はメートルで入力';
                 distInput.placeholder = '150';
             }
-            
-            saveSettings();
         }
         
         function confirmModeChange(newMode) {
@@ -888,13 +1090,14 @@
             if (currentShots.length > 0 || holes.length > 0) {
                 pendingMode = newMode;
                 const text = newMode === 'advanced' 
-                    ? 'アドバンスドモードに切り替えますか？切替時に入力されたデータは失われます。'
-                    : 'シンプルモードに切り替えますか？切替時に入力されたデータは失われます。';
+                    ? 'アドバンスドモードに切り替えますか？入力データは保持されますが、SG計算には新しいデータが必要です。'
+                    : 'シンプルモードに切り替えますか？SG分析機能が無効になります。';
                 document.getElementById('modeConfirmText').textContent = text;
                 document.getElementById('modeConfirmModal').classList.add('active');
             } else {
                 appMode = newMode;
                 updateModeUI();
+                saveData();
             }
         }
         
@@ -904,27 +1107,17 @@
         }
         
         function executeModeChange() {
-            holes = [];
-            currentShots = [];
-            currentHole = 1;
-            selectedResult = null;
             appMode = pendingMode;
-            
-            document.getElementById('currentHole').textContent = 1;
-            document.getElementById('shotCount').textContent = 1;
-            document.getElementById('distanceBefore').value = '';
-            document.getElementById('distanceAfter').value = '';
-            document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
-            
             updateModeUI();
-            updateCurrentShots();
             updateDisplay();
+            saveData();
             closeModeConfirm();
         }
         
         function openSettings() {
             document.getElementById('settingsModal').classList.add('active');
             updateClubList();
+            displayBaseline();
         }
         
         function closeSettings() {
@@ -935,7 +1128,7 @@
             const list = document.getElementById('clubList');
             list.innerHTML = customClubs.map((club, i) => `
                 <div class="club-item">
-                    <span>${club}</span>
+                    <span style="font-weight: 600;">${club}</span>
                     <button class="remove-club-btn" onclick="removeClub(${i})">削除</button>
                 </div>
             `).join('');
@@ -949,70 +1142,104 @@
                 input.value = '';
                 updateClubList();
                 updateClubSelect();
-                saveSettings();
+                saveData();
             }
         }
         
         function removeClub(index) {
-            customClubs.splice(index, 1);
-            updateClubList();
-            updateClubSelect();
-            saveSettings();
+            if (confirm(`${customClubs[index]}を削除しますか？`)) {
+                customClubs.splice(index, 1);
+                updateClubList();
+                updateClubSelect();
+                saveData();
+            }
         }
         
-        function getExpectedStrokes(distance, lie = 'フェアウェイ', wind = '無風') {
+        function calculateBaseline() {
+            if (holes.length < 10) return;
+            
+            const allShots = holes.flatMap(h => h.shots);
+            const categories = { OTT: [], APP: [], ARG: [], PUT: [] };
+            
+            allShots.forEach(shot => {
+                if (!shot.distanceAfter && shot.distanceAfter !== 0) return;
+                const cat = getSGCategory(shot.shotNumber, shot.holePar || 4, shot.distanceBefore, shot.situation);
+                const sg = calculateSG(shot.distanceBefore, shot.distanceAfter, shot.situation, 
+                    shot.afterLie || 'グリーン', shot.wind || '無風', shot.slope || '平坦', shot.greenCondition || '普通');
+                categories[cat].push(sg);
+            });
+            
+            personalBaseline = {};
+            Object.keys(categories).forEach(cat => {
+                if (categories[cat].length > 0) {
+                    personalBaseline[cat] = categories[cat].reduce((a, b) => a + b, 0) / categories[cat].length;
+                }
+            });
+            
+            saveData();
+        }
+        
+        function displayBaseline() {
+            const display = document.getElementById('baselineDisplay');
+            if (!personalBaseline || holes.length < 10) {
+                display.innerHTML = '<div style="color: #999; text-align: center; padding: 20px;">データ不足（10ラウンド以上必要）</div>';
+                return;
+            }
+            
+            let html = '';
+            Object.keys(personalBaseline).forEach(cat => {
+                const val = personalBaseline[cat].toFixed(3);
+                const sign = personalBaseline[cat] >= 0 ? '+' : '';
+                const color = personalBaseline[cat] >= 0 ? '#2E7D32' : '#D32F2F';
+                html += `<div class="baseline-item"><span>${cat}</span><span style="font-weight: 700; color: ${color};">${sign}${val}</span></div>`;
+            });
+            display.innerHTML = html;
+        }
+        
+        function resetBaseline() {
+            if (confirm('ベースラインをリセットしますか？')) {
+                personalBaseline = null;
+                saveData();
+                displayBaseline();
+            }
+        }
+        
+        function getExpectedStrokes(distance, lie, wind, slope, greenCond) {
             let baseExpected = 0;
             
             if (distance <= 0) return 1.0;
             if (distance >= 400) return 5.3;
             
-            const distances = Object.keys(EXPECTED_STROKES).map(Number).sort((a, b) => a - b);
-            let lower = 0, upper = 400;
+            const lower = Math.floor(distance / 5) * 5;
+            const upper = lower + 5;
+            const ratio = (distance - lower) / 5;
+            baseExpected = EXPECTED_STROKES_DETAILED[lower] + (EXPECTED_STROKES_DETAILED[upper] - EXPECTED_STROKES_DETAILED[lower]) * ratio;
             
-            for (let i = 0; i < distances.length - 1; i++) {
-                if (distance >= distances[i] && distance <= distances[i + 1]) {
-                    lower = distances[i];
-                    upper = distances[i + 1];
-                    break;
-                }
-            }
+            const lieFactor = lie === 'ラフ' ? 1.10 : lie === 'バンカー' ? 1.15 : 1.00;
+            const windFactor = wind === 'フォロー強' ? 0.95 : wind.includes('アゲインスト') ? 1.10 : 1.00;
+            const slopeFactor = SLOPE_FACTORS[slope] || 1.00;
+            const greenFactor = GREEN_FACTORS[greenCond] || 1.00;
             
-            const ratio = (distance - lower) / (upper - lower);
-            baseExpected = EXPECTED_STROKES[lower] + (EXPECTED_STROKES[upper] - EXPECTED_STROKES[lower]) * ratio;
-            
-            const lieFactor = LIE_FACTORS[lie] || 1.0;
-            const windFactor = WIND_FACTORS[wind] || 1.0;
-            
-            return baseExpected * lieFactor * windFactor;
+            return baseExpected * lieFactor * windFactor * slopeFactor * greenFactor;
         }
         
         function getPuttExpected(distanceM) {
-            const distanceFt = distanceM * 3.28084;
-            if (distanceFt <= 3) return 1.20;
-            if (distanceFt >= 50) return 2.40;
+            if (distanceM <= 1) return 1.20;
+            if (distanceM >= 15) return 1.65;
             
-            const distances = Object.keys(PUTT_EXPECTED).map(Number).sort((a, b) => a - b);
-            let lower = 3, upper = 50;
-            
-            for (let i = 0; i < distances.length - 1; i++) {
-                if (distanceFt >= distances[i] && distanceFt <= distances[i + 1]) {
-                    lower = distances[i];
-                    upper = distances[i + 1];
-                    break;
-                }
-            }
-            
-            const ratio = (distanceFt - lower) / (upper - lower);
-            return PUTT_EXPECTED[lower] + (PUTT_EXPECTED[upper] - PUTT_EXPECTED[lower]) * ratio;
+            const lower = Math.floor(distanceM / 0.5) * 0.5;
+            const upper = lower + 0.5;
+            const ratio = (distanceM - lower) / 0.5;
+            return PUTT_EXPECTED_DETAILED[lower] + (PUTT_EXPECTED_DETAILED[upper] - PUTT_EXPECTED_DETAILED[lower]) * ratio;
         }
         
-        function calculateSG(beforeDist, afterDist, beforeLie, afterLie, wind) {
+        function calculateSG(beforeDist, afterDist, beforeLie, afterLie, wind, slope, greenCond) {
             let expectedBefore, expectedAfter;
             
             if (beforeLie === 'グリーン') {
                 expectedBefore = getPuttExpected(beforeDist);
             } else {
-                expectedBefore = getExpectedStrokes(beforeDist, beforeLie, wind);
+                expectedBefore = getExpectedStrokes(beforeDist, beforeLie, wind, slope, greenCond);
             }
             
             if (afterDist === 0) {
@@ -1020,7 +1247,7 @@
             } else if (afterLie === 'グリーン') {
                 expectedAfter = getPuttExpected(afterDist);
             } else {
-                expectedAfter = getExpectedStrokes(afterDist, afterLie, wind);
+                expectedAfter = getExpectedStrokes(afterDist, afterLie, wind, slope, greenCond);
             }
             
             return expectedBefore - (1 + expectedAfter);
@@ -1028,9 +1255,7 @@
         
         function getSGCategory(shotNum, holePar, distance, lie) {
             if (lie === 'グリーン') return 'PUT';
-            if (shotNum === 1) {
-                return holePar === 3 ? 'APP' : 'OTT';
-            }
+            if (shotNum === 1) return holePar === 3 ? 'APP' : 'OTT';
             if (distance <= 30) return 'ARG';
             return 'APP';
         }
@@ -1041,31 +1266,47 @@
             btn.classList.add('active');
         }
         
+        function predictNextSituation() {
+            if (currentShots.length === 0) return 'ティーグラウンド';
+            
+            const lastShot = currentShots[currentShots.length - 1];
+            const lastClub = lastShot.club;
+            const lastResult = lastShot.result;
+            
+            if (lastClub === 'PT') return 'グリーン';
+            if (lastResult === '◎' || lastResult === '○') {
+                if (lastShot.situation === 'ティーグラウンド') return 'フェアウェイ';
+                if (lastShot.situation === 'バンカー') return 'グリーン';
+                return 'グリーン';
+            }
+            if (lastResult === '×') return 'ラフ';
+            return 'フェアウェイ';
+        }
+        
         function addShot() {
             const situation = document.getElementById('situation').value;
             const club = document.getElementById('club').value;
             const distanceBefore = parseFloat(document.getElementById('distanceBefore').value);
             const wind = appMode === 'advanced' ? document.getElementById('wind').value : '無風';
+            const slope = appMode === 'advanced' ? document.getElementById('slope').value : '平坦';
+            const greenCondition = appMode === 'advanced' ? document.getElementById('greenCondition').value : '普通';
             
             if (!distanceBefore || !selectedResult) {
-                alert('打つ前の残距離と結果を入力してください');
+                alert('距離と結果を入力してください');
                 return;
             }
             
-            let distanceAfter = 0;
-            let afterLie = 'グリーン';
+            let distanceAfter = null;
+            let afterLie = null;
             
             if (appMode === 'advanced') {
                 const afterInput = document.getElementById('distanceAfter').value;
-                if (afterInput === '' || afterInput === null) {
+                if (afterInput === '') {
                     alert('打った後の残距離を入力してください（カップインの場合は0）');
                     return;
                 }
                 distanceAfter = parseFloat(afterInput);
-                
-                if (distanceAfter > 0) {
-                    afterLie = currentShots.length === 0 ? 'フェアウェイ' : situation;
-                }
+                afterLie = distanceAfter > 0 ? predictNextSituation() : 'グリーン';
             }
             
             currentShots.push({
@@ -1073,10 +1314,13 @@
                 situation,
                 club,
                 distanceBefore,
-                distanceAfter: appMode === 'advanced' ? distanceAfter : null,
-                afterLie: appMode === 'advanced' ? afterLie : null,
+                distanceAfter,
+                afterLie,
                 wind,
-                result: selectedResult
+                slope,
+                greenCondition,
+                result: selectedResult,
+                holePar: parseInt(document.getElementById('holePar').value)
             });
             
             document.getElementById('distanceBefore').value = '';
@@ -1086,11 +1330,8 @@
             document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
             selectedResult = null;
             
-            if (club === 'PT') {
-                document.getElementById('situation').value = 'グリーン';
-            } else if (currentShots.length === 1) {
-                document.getElementById('situation').value = 'フェアウェイ';
-            }
+            const nextSituation = predictNextSituation();
+            document.getElementById('situation').value = nextSituation;
             
             updateCurrentShots();
             document.getElementById('shotCount').textContent = currentShots.length + 1;
@@ -1108,14 +1349,10 @@
                 const beforeLabel = s.situation === 'グリーン' ? 'm' : 'yd';
                 const afterLabel = s.afterLie === 'グリーン' ? 'm' : 'yd';
                 let distText = `${s.distanceBefore}${beforeLabel}`;
-                if (appMode === 'advanced' && s.distanceAfter !== null) {
+                if (s.distanceAfter !== null) {
                     distText += ` → ${s.distanceAfter === 0 ? 'カップイン' : s.distanceAfter + afterLabel}`;
                 }
-                return `
-                    <div class="shot-item">
-                        ${s.shotNumber}打目: ${s.situation} → ${s.club} (${distText}) → ${s.result}
-                    </div>
-                `;
+                return `<div class="shot-item">${s.shotNumber}打目: ${s.situation} → ${s.club} (${distText}) → ${s.result}</div>`;
             }).join('');
         }
         
@@ -1153,7 +1390,8 @@
             
             updateCurrentShots();
             updateDisplay();
-            saveSettings();
+            calculateBaseline();
+            saveData();
         }
         
         function switchTab(tabName) {
@@ -1162,30 +1400,45 @@
             
             document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
             document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            if (tabName === 'graphs') {
+                setTimeout(() => {
+                    updateCharts();
+                    updateHeatmap();
+                }, 100);
+            }
         }
         
         function resetAll() {
-            if (holes.length === 0 || confirm('全てのデータを削除しますか?')) {
-                holes = [];
+            if (holes.length === 0 || confirm('現在のラウンドを終了しますか？この操作は取り消せません。')) {
                 currentShots = [];
                 currentHole = 1;
                 selectedResult = null;
+                personalBaseline = null;
+                
                 document.getElementById('currentHole').textContent = 1;
                 document.getElementById('shotCount').textContent = 1;
                 document.getElementById('situation').value = 'ティーグラウンド';
+                document.getElementById('holePar').value = '4';
+                document.getElementById('distanceBefore').value = '';
+                if (appMode === 'advanced') {
+                    document.getElementById('distanceAfter').value = '';
+                }
+                document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
+                
                 updateCurrentShots();
                 updateDisplay();
-                saveSettings();
+                saveData();
             }
         }
         
         function updateDisplay() {
             updateScorecard();
             updateStats();
+            updateRecords();
             if (appMode === 'advanced') {
                 updateSGStats();
             }
-            updateRecords();
         }
         
         function updateScorecard() {
@@ -1237,7 +1490,7 @@
                         <div class="scorecard-cell">${frontPuttTotal || '-'}</div>
                     </div>
                 </div>
-                <div class="scorecard" style="margin-top: 10px;">
+                <div class="scorecard" style="margin-top: 12px;">
                     <div class="scorecard-header">
                         <div class="scorecard-cell">HOLE</div>
                         ${Array.from({length: 9}, (_, i) => `<div class="scorecard-cell">${i + 10}</div>`).join('')}
@@ -1254,9 +1507,7 @@
                         <div class="scorecard-cell">${backPuttTotal || '-'}</div>
                     </div>
                 </div>
-                <div class="total-score">
-                    合計: ${frontTotal + backTotal} (パット${frontPuttTotal + backPuttTotal})
-                </div>
+                <div class="total-score">合計: ${frontTotal + backTotal} (パット${frontPuttTotal + backPuttTotal})</div>
             `;
         }
         
@@ -1353,42 +1604,43 @@
         }
         
         function updateSGStats() {
-            if (holes.length === 0) {
+            if (holes.length === 0 || appMode !== 'advanced') {
                 document.getElementById('sgTotal').textContent = '-';
+                document.getElementById('sgT2G').textContent = '-';
                 document.getElementById('sgOTT').textContent = '-';
                 document.getElementById('sgAPP').textContent = '-';
                 document.getElementById('sgARG').textContent = '-';
                 document.getElementById('sgPUT').textContent = '-';
-                document.getElementById('sgT2G').textContent = '-';
+                document.getElementById('sgVsBaseline').textContent = '-';
                 document.getElementById('clubSGStats').innerHTML = 'データを追加してください';
-                document.getElementById('distanceApproach').innerHTML = '<div class="empty-message" style="grid-column: 1/-1;">データなし</div>';
                 return;
             }
             
             let sgOTT = 0, sgAPP = 0, sgARG = 0, sgPUT = 0;
-            const clubSGs = {}; // 番手別SG集計
+            const clubSGs = {};
             
             holes.forEach(h => {
                 h.shots.forEach(shot => {
-                    if (shot.distanceAfter === null) return;
+                    if (shot.distanceAfter === null && shot.distanceAfter !== 0) return;
                     
                     const beforeDist = shot.distanceBefore;
                     const afterDist = shot.distanceAfter;
                     const beforeLie = shot.situation;
                     const afterLie = shot.afterLie || 'グリーン';
                     const wind = shot.wind || '無風';
+                    const slope = shot.slope || '平坦';
+                    const greenCond = shot.greenCondition || '普通';
                     
-                    const sg = calculateSG(beforeDist, afterDist, beforeLie, afterLie, wind);
-                    const category = getSGCategory(shot.shotNumber, h.par, shot.distanceBefore, shot.situation);
+                    const sg = calculateSG(beforeDist, afterDist, beforeLie, afterLie, wind, slope, greenCond);
+                    const category = getSGCategory(shot.shotNumber, h.par, beforeDist, beforeLie);
                     
                     if (category === 'OTT') sgOTT += sg;
                     else if (category === 'APP') sgAPP += sg;
                     else if (category === 'ARG') sgARG += sg;
                     else if (category === 'PUT') sgPUT += sg;
                     
-                    // 番手別SG集計
                     if (!clubSGs[shot.club]) {
-                        clubSGs[shot.club] = { total: 0, count: 0, category };
+                        clubSGs[shot.club] = { total: 0, count: 0 };
                     }
                     clubSGs[shot.club].total += sg;
                     clubSGs[shot.club].count++;
@@ -1399,13 +1651,21 @@
             const sgTotal = sgT2G + sgPUT;
             
             document.getElementById('sgTotal').textContent = sgTotal.toFixed(2);
+            document.getElementById('sgT2G').textContent = sgT2G.toFixed(2);
             document.getElementById('sgOTT').textContent = sgOTT.toFixed(2);
             document.getElementById('sgAPP').textContent = sgAPP.toFixed(2);
             document.getElementById('sgARG').textContent = sgARG.toFixed(2);
             document.getElementById('sgPUT').textContent = sgPUT.toFixed(2);
-            document.getElementById('sgT2G').textContent = sgT2G.toFixed(2);
             
-            // 番手別SG表示
+            if (personalBaseline && Object.keys(personalBaseline).length > 0) {
+                const baselineTotal = Object.values(personalBaseline).reduce((a, b) => a + b, 0);
+                const vsBaseline = sgTotal - baselineTotal;
+                const sign = vsBaseline >= 0 ? '+' : '';
+                document.getElementById('sgVsBaseline').textContent = sign + vsBaseline.toFixed(2);
+            } else {
+                document.getElementById('sgVsBaseline').textContent = '-';
+            }
+            
             let clubSGHTML = '';
             Object.keys(clubSGs).sort().forEach(club => {
                 const avg = (clubSGs[club].total / clubSGs[club].count).toFixed(3);
@@ -1419,34 +1679,6 @@
                 `;
             });
             document.getElementById('clubSGStats').innerHTML = clubSGHTML || 'データなし';
-            
-            // 距離別アプローチ
-            const distRanges = {'~100yd': [], '100-150yd': [], '150-200yd': [], '200yd~': []};
-            holes.forEach(h => {
-                h.shots.forEach(s => {
-                    if (s.situation !== 'グリーン' && s.situation !== 'ティーグラウンド') {
-                        const d = s.distanceBefore;
-                        if (d < 100) distRanges['~100yd'].push(s);
-                        else if (d < 150) distRanges['100-150yd'].push(s);
-                        else if (d < 200) distRanges['150-200yd'].push(s);
-                        else distRanges['200yd~'].push(s);
-                    }
-                });
-            });
-            
-            let distHTML = '';
-            Object.keys(distRanges).forEach(range => {
-                const shots = distRanges[range];
-                const goodShots = shots.filter(s => ['◎', '○'].includes(s.result)).length;
-                const rate = shots.length > 0 ? ((goodShots / shots.length) * 100).toFixed(0) : '-';
-                distHTML += `
-                    <div class="stat-card">
-                        <div class="stat-label">${range}</div>
-                        <div class="stat-value">${rate === '-' ? '-' : rate + '%'}</div>
-                    </div>
-                `;
-            });
-            document.getElementById('distanceApproach').innerHTML = distHTML || '<div class="empty-message" style="grid-column: 1/-1;">データなし</div>';
         }
         
         function updateRecords() {
@@ -1474,6 +1706,102 @@
                     </div>
                 `).join('');
             }
+        }
+        
+        function updateCharts() {
+            if (holes.length === 0) return;
+            
+            const ctx1 = document.getElementById('scoreChart');
+            if (scoreChart) scoreChart.destroy();
+            
+            scoreChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: holes.map(h => `H${h.hole}`),
+                    datasets: [{
+                        label: 'スコア',
+                        data: holes.map(h => h.score),
+                        borderColor: '#2E7D32',
+                        backgroundColor: 'rgba(46,125,50,0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: false }
+                    }
+                }
+            });
+            
+            const scoreDist = { 'バーディ以下': 0, 'パー': 0, 'ボギー': 0, 'ダブルボギー以上': 0 };
+            holes.forEach(h => {
+                const diff = h.score - h.par;
+                if (diff <= -1) scoreDist['バーディ以下']++;
+                else if (diff === 0) scoreDist['パー']++;
+                else if (diff === 1) scoreDist['ボギー']++;
+                else scoreDist['ダブルボギー以上']++;
+            });
+            
+            const ctx2 = document.getElementById('scoreDistChart');
+            if (distChart) distChart.destroy();
+            
+            distChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(scoreDist),
+                    datasets: [{
+                        data: Object.values(scoreDist),
+                        backgroundColor: ['#4CAF50', '#8BC34A', '#FFC107', '#FF5722']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+        
+        function updateHeatmap() {
+            const heatmap = document.getElementById('heatmap');
+            if (holes.length === 0) {
+                heatmap.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999;">データなし</div>';
+                return;
+            }
+            
+            const ranges = [
+                { label: '~50', min: 0, max: 50 },
+                { label: '50-100', min: 50, max: 100 },
+                { label: '100-150', min: 100, max: 150 },
+                { label: '150-200', min: 150, max: 200 },
+                { label: '200+', min: 200, max: 999 }
+            ];
+            
+            let html = '';
+            ranges.forEach(range => {
+                const shots = holes.flatMap(h => h.shots).filter(s => 
+                    s.distanceBefore >= range.min && s.distanceBefore < range.max && s.situation !== 'グリーン'
+                );
+                const goodShots = shots.filter(s => ['◎', '○'].includes(s.result)).length;
+                const rate = shots.length > 0 ? (goodShots / shots.length) : 0;
+                
+                const color = rate >= 0.7 ? '#4CAF50' : rate >= 0.5 ? '#FFC107' : rate >= 0.3 ? '#FF9800' : '#FF5722';
+                const textColor = 'white';
+                
+                html += `
+                    <div class="heatmap-cell" style="background: ${color}; color: ${textColor};">
+                        <div style="font-size: 9px;">${range.label}yd</div>
+                        <div style="font-size: 16px; font-weight: 700;">${(rate * 100).toFixed(0)}%</div>
+                        <div style="font-size: 8px;">${shots.length}打</div>
+                    </div>
+                `;
+            });
+            
+            heatmap.innerHTML = html;
         }
         
         init();
