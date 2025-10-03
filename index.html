@@ -833,6 +833,7 @@
             <div class="action-btns">
                 <button type="button" class="add-shot-btn" onclick="addShot()">➕ 打を追加</button>
                 <button type="button" class="finish-hole-btn" onclick="finishHole()">✓ ホール終了</button>
+                <button type="button" style="padding: 16px; background: linear-gradient(135deg, #FF9800, #F57C00); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s;" onclick="finishRound()" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(255,152,0,0.3)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">🏁 ラウンド終了</button>
             </div>
             
             <div class="tabs">
@@ -955,7 +956,7 @@
                 <div class="records" id="records"></div>
             </div>
             
-            <button type="button" class="reset-btn" onclick="resetAll()">🗑️ ラウンド終了</button>
+            <button type="button" class="reset-btn" onclick="resetAll()">🗑️ 全てリセット</button>
         </div>
     </div>
     
@@ -1326,6 +1327,13 @@
             document.getElementById('distanceBefore').value = '';
             if (appMode === 'advanced') {
                 document.getElementById('distanceAfter').value = '';
+                
+                // 次の打の「打つ前の残距離」に自動反映
+                if (distanceAfter !== null && distanceAfter > 0) {
+                    setTimeout(() => {
+                        document.getElementById('distanceBefore').value = distanceAfter;
+                    }, 100);
+                }
             }
             document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
             selectedResult = null;
@@ -1409,8 +1417,54 @@
             }
         }
         
+        function finishRound() {
+            if (holes.length === 0) {
+                alert('ラウンドデータがありません');
+                return;
+            }
+            
+            if (!confirm('ラウンドを終了しますか？スコア表と詳細がリセットされますが、統計データは保持されます。')) {
+                return;
+            }
+            
+            // 現在のラウンドデータを統計用に保存（holesはそのまま統計計算に使われる）
+            // スコア表示用のデータのみクリア
+            currentShots = [];
+            currentHole = 1;
+            selectedResult = null;
+            
+            // UIをリセット
+            document.getElementById('currentHole').textContent = 1;
+            document.getElementById('shotCount').textContent = 1;
+            document.getElementById('situation').value = 'ティーグラウンド';
+            document.getElementById('holePar').value = '4';
+            document.getElementById('distanceBefore').value = '';
+            if (appMode === 'advanced') {
+                document.getElementById('distanceAfter').value = '';
+            }
+            document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
+            
+            // スコアカードと詳細タブの表示のみクリア
+            updateCurrentShots();
+            document.getElementById('scorecardContainer').innerHTML = '<div class="empty-message">新しいラウンドを開始してください</div>';
+            document.getElementById('records').innerHTML = '<div class="empty-message">新しいラウンドを開始してください</div>';
+            
+            // 統計、グラフ、SGは保持（holesデータは統計用に残す）
+            // ベースラインも再計算して保持
+            calculateBaseline();
+            updateStats();
+            if (appMode === 'advanced') {
+                updateSGStats();
+            }
+            
+            saveData();
+            
+            alert('ラウンドが終了しました。統計データは保持されています。新しいラウンドを開始できます。');
+        }
+        
         function resetAll() {
-            if (holes.length === 0 || confirm('現在のラウンドを終了しますか？この操作は取り消せません。')) {
+            if (holes.length === 0 || confirm('全てのデータを削除しますか？この操作は取り消せません。')) {
+                holes = [];
                 currentShots = [];
                 currentHole = 1;
                 selectedResult = null;
