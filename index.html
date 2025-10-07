@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ゴルフ統計Pro</title>
+    <title>ゴルフ統計Pro v2.0</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <style>
         * {
@@ -14,7 +14,7 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #388E3C 100%);
             min-height: 100vh;
             padding: 10px;
         }
@@ -23,16 +23,16 @@
             max-width: 480px;
             margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-radius: 24px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.35);
             overflow: hidden;
-            animation: slideIn 0.4s ease-out;
+            animation: slideIn 0.5s ease-out;
         }
         
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -41,226 +41,228 @@
         }
         
         .header {
-            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
             color: white;
-            padding: 24px 20px;
+            padding: 28px 20px;
             text-align: center;
             position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
         .settings-btn {
             position: absolute;
             right: 20px;
-            top: 24px;
-            background: rgba(255,255,255,0.2);
-            border: none;
+            top: 28px;
+            background: rgba(255,255,255,0.25);
+            border: 2px solid rgba(255,255,255,0.4);
             color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 10px 14px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             transition: all 0.3s;
         }
         
         .settings-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: rotate(90deg);
+            background: rgba(255,255,255,0.35);
+            transform: rotate(90deg) scale(1.1);
         }
         
         h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 12px;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
-        .mode-toggle {
-            margin-top: 12px;
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-        }
-        
-        .mode-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            cursor: pointer;
+        .subtitle {
             font-size: 13px;
-            transition: all 0.3s;
-        }
-        
-        .mode-btn.active {
-            background: white;
-            color: #2E7D32;
-            transform: scale(1.05);
+            opacity: 0.9;
+            font-weight: 500;
         }
         
         .content {
-            padding: 20px;
+            padding: 24px 20px;
         }
         
         .hole-header {
             background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            animation: fadeIn 0.3s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            padding: 24px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            border: 3px solid #4CAF50;
+            box-shadow: 0 4px 16px rgba(76,175,80,0.2);
         }
         
         .hole-info-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
         
         .hole-info {
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 28px;
+            font-weight: 800;
             color: #1B5E20;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         
         .shot-number {
-            font-size: 18px;
+            font-size: 20px;
             color: #2E7D32;
-            font-weight: 600;
+            font-weight: 700;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .hole-par {
-            font-size: 14px;
-            color: #666;
+            font-size: 15px;
+            color: #1B5E20;
+            font-weight: 600;
         }
         
         .par-select {
-            padding: 6px 12px;
+            padding: 8px 14px;
             border: 2px solid #2E7D32;
-            border-radius: 8px;
-            margin-left: 8px;
+            border-radius: 10px;
+            margin-left: 10px;
             background: white;
+            font-weight: 600;
+            font-size: 15px;
+            color: #1B5E20;
+            cursor: pointer;
             transition: all 0.3s;
         }
         
         .par-select:focus {
             outline: none;
             border-color: #1B5E20;
-            box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+            box-shadow: 0 0 0 4px rgba(46,125,50,0.15);
+            transform: scale(1.05);
         }
         
         .input-section {
-            background: #F8F9FA;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
+            background: linear-gradient(135deg, #F8F9FA, #ECEFF1);
+            padding: 24px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            border: 2px solid #E0E0E0;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
         
         .input-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
+            gap: 16px;
+            margin-bottom: 20px;
         }
         
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         
         .input-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #424242;
+            margin-bottom: 10px;
             display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         select, input {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: 2px solid #E0E0E0;
-            border-radius: 10px;
-            font-size: 15px;
+            border-radius: 12px;
+            font-size: 16px;
             background: white;
             transition: all 0.3s;
+            font-weight: 500;
         }
         
         select:focus, input:focus {
             outline: none;
             border-color: #2E7D32;
-            box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+            box-shadow: 0 0 0 4px rgba(46,125,50,0.12);
             transform: translateY(-2px);
+        }
+        
+        .distance-input-group {
+            position: relative;
+        }
+        
+        .unit-badge {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #2E7D32;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            pointer-events: none;
         }
         
         .result-btns {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 12px;
         }
         
         .result-btn {
-            padding: 16px;
-            border: 2px solid #E0E0E0;
+            padding: 20px;
+            border: 3px solid #E0E0E0;
             background: white;
             color: #666;
-            border-radius: 12px;
-            font-size: 22px;
+            border-radius: 16px;
+            font-size: 28px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s;
         }
         
         .result-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
         
         .result-btn.active {
             border-color: #2E7D32;
-            background: #2E7D32;
+            background: linear-gradient(135deg, #2E7D32, #1B5E20);
             color: white;
-            transform: scale(1.05);
-        }
-        
-        .advanced-only {
-            display: none;
-        }
-        
-        .advanced-only.show {
-            display: block;
-            animation: slideDown 0.3s ease-out;
-        }
-        
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                max-height: 0;
-            }
-            to {
-                opacity: 1;
-                max-height: 500px;
-            }
+            transform: translateY(-4px) scale(1.08);
+            box-shadow: 0 10px 25px rgba(46,125,50,0.4);
         }
         
         .action-btns {
             display: grid;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 14px;
+            margin-bottom: 24px;
         }
         
-        .add-shot-btn, .finish-hole-btn {
-            padding: 16px;
+        .btn {
+            padding: 18px;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
         
         .add-shot-btn {
@@ -268,75 +270,75 @@
             color: white;
         }
         
-        .add-shot-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(46,125,50,0.3);
-        }
-        
         .finish-hole-btn {
             background: linear-gradient(135deg, #1976D2, #1565C0);
             color: white;
         }
         
-        .finish-hole-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(25,118,210,0.3);
+        .finish-round-btn {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            color: white;
         }
         
         .current-shots {
             background: linear-gradient(135deg, #FFF9C4, #FFF59D);
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            max-height: 200px;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            max-height: 250px;
             overflow-y: auto;
-            border: 2px solid #FDD835;
-            animation: fadeIn 0.3s;
+            border: 3px solid #FDD835;
+            box-shadow: 0 4px 12px rgba(253,216,53,0.3);
         }
         
         .shot-item {
-            padding: 12px;
+            padding: 14px;
             background: white;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 13px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            font-size: 14px;
             color: #333;
-            border-left: 4px solid #2E7D32;
-            animation: slideIn 0.3s;
+            border-left: 5px solid #2E7D32;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
         
         .tabs {
             display: flex;
             gap: 0;
-            margin: 20px 0;
-            background: #F5F5F5;
-            border-radius: 12px;
-            padding: 6px;
+            margin: 24px 0;
+            background: #ECEFF1;
+            border-radius: 16px;
+            padding: 8px;
             overflow-x: auto;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .tab {
             flex: 1;
-            padding: 12px 10px;
+            padding: 14px 12px;
             background: transparent;
             border: none;
-            color: #666;
+            color: #757575;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 12px;
             white-space: nowrap;
             transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
         
         .tab:hover {
-            background: rgba(46,125,50,0.1);
+            background: rgba(46,125,50,0.15);
+            color: #2E7D32;
         }
         
         .tab.active {
-            background: white;
-            color: #2E7D32;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #2E7D32, #1B5E20);
+            color: white;
+            box-shadow: 0 4px 12px rgba(46,125,50,0.3);
             transform: translateY(-2px);
         }
         
@@ -346,44 +348,56 @@
         
         .tab-content.active {
             display: block;
-            animation: fadeIn 0.3s;
+            animation: fadeIn 0.4s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 14px;
+            margin-bottom: 24px;
         }
         
         .stat-card {
-            background: #F8F9FA;
-            padding: 16px;
-            border-radius: 12px;
+            background: linear-gradient(135deg, #F5F7FA, #E8EAF6);
+            padding: 20px;
+            border-radius: 16px;
             text-align: center;
             transition: all 0.3s;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         
         .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+            border-color: #2E7D32;
         }
         
         .stat-label {
             font-size: 11px;
-            color: #666;
-            margin-bottom: 6px;
-            font-weight: 600;
+            color: #616161;
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #2E7D32;
+            font-size: 32px;
+            font-weight: 800;
+            color: #1B5E20;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         
         .stat-card.highlight {
             background: linear-gradient(135deg, #2E7D32, #1B5E20);
+            border-color: #4CAF50;
         }
         
         .stat-card.highlight .stat-label,
@@ -391,51 +405,71 @@
             color: white;
         }
         
+        .sg-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #9C27B0;
+        }
+        
+        .sg-card .stat-label,
+        .sg-card .stat-value {
+            color: white;
+        }
+        
         .section-title {
-            font-size: 15px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 800;
             color: #1B5E20;
-            margin: 20px 0 12px 0;
+            margin: 28px 0 16px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .chart-container {
             background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            border: 2px solid #E0E0E0;
         }
         
         .chart-title {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 700;
             color: #1B5E20;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .heatmap {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin-top: 12px;
+            gap: 10px;
+            margin-top: 16px;
         }
         
         .heatmap-cell {
             aspect-ratio: 1;
-            border-radius: 8px;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             font-size: 10px;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
         
         .heatmap-cell:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transform: scale(1.15);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            z-index: 10;
         }
         
         .modal {
@@ -445,10 +479,10 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
             z-index: 1000;
             padding: 20px;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
         }
         
         .modal.active {
@@ -460,136 +494,130 @@
         
         .modal-content {
             background: white;
-            border-radius: 20px;
-            padding: 24px;
-            max-width: 400px;
+            border-radius: 24px;
+            padding: 28px;
+            max-width: 420px;
             width: 100%;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
-            animation: slideIn 0.3s;
+            animation: slideIn 0.4s;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
         }
         
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 3px solid #E0E0E0;
         }
         
         .modal-title {
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 22px;
+            font-weight: 800;
             color: #1B5E20;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .close-modal-btn {
             background: #E0E0E0;
             border: none;
-            color: #666;
-            padding: 8px 16px;
-            border-radius: 8px;
+            color: #424242;
+            padding: 10px 18px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s;
         }
         
         .close-modal-btn:hover {
             background: #BDBDBD;
-        }
-        
-        .baseline-section {
-            background: #F8F9FA;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 16px;
-        }
-        
-        .baseline-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #E0E0E0;
-        }
-        
-        .baseline-item:last-child {
-            border-bottom: none;
+            transform: scale(1.05);
         }
         
         .club-list {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
         
         .club-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
+            padding: 14px;
             background: #F5F5F5;
-            border-radius: 8px;
-            margin-bottom: 8px;
+            border-radius: 12px;
+            margin-bottom: 10px;
             transition: all 0.3s;
+            border: 2px solid transparent;
         }
         
         .club-item:hover {
             background: #E8F5E9;
+            border-color: #2E7D32;
+            transform: translateX(4px);
         }
         
         .remove-club-btn {
-            background: #FF5722;
+            background: linear-gradient(135deg, #FF5722, #E64A19);
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s;
         }
         
         .remove-club-btn:hover {
-            background: #E64A19;
-            transform: scale(1.05);
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(255,87,34,0.4);
         }
         
         .add-club-section {
             display: flex;
-            gap: 8px;
-            margin-top: 12px;
+            gap: 10px;
+            margin-top: 16px;
         }
         
         .add-club-input {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: 2px solid #E0E0E0;
-            border-radius: 8px;
+            border-radius: 10px;
+            font-weight: 600;
         }
         
         .add-club-btn {
-            background: #2E7D32;
+            background: linear-gradient(135deg, #2E7D32, #1B5E20);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s;
         }
         
         .add-club-btn:hover {
-            background: #1B5E20;
             transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(46,125,50,0.3);
         }
         
         .reset-btn, .reset-baseline-btn {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
-            margin-top: 16px;
+            margin-top: 20px;
             transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .reset-btn {
@@ -599,130 +627,154 @@
         
         .reset-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(211,47,47,0.3);
+            box-shadow: 0 8px 20px rgba(211,47,47,0.4);
         }
         
         .reset-baseline-btn {
-            background: #FF9800;
+            background: linear-gradient(135deg, #FF9800, #F57C00);
             color: white;
         }
         
         .reset-baseline-btn:hover {
-            background: #F57C00;
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,152,0,0.4);
         }
         
         .help-text {
-            font-size: 11px;
-            color: #999;
-            margin-top: 6px;
+            font-size: 12px;
+            color: #757575;
+            margin-top: 8px;
+            font-style: italic;
         }
         
         .empty-message {
             text-align: center;
-            color: #999;
-            padding: 40px 20px;
-            font-size: 14px;
+            color: #9E9E9E;
+            padding: 50px 20px;
+            font-size: 15px;
+            font-weight: 600;
         }
         
         .scorecard {
             background: white;
-            border: 2px solid #2E7D32;
-            border-radius: 12px;
+            border: 3px solid #2E7D32;
+            border-radius: 16px;
             overflow-x: auto;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 16px rgba(46,125,50,0.2);
         }
         
         .scorecard-header, .scorecard-row {
             display: grid;
-            grid-template-columns: 50px repeat(9, 1fr) 60px;
+            grid-template-columns: 55px repeat(9, 1fr) 65px;
             gap: 1px;
             font-size: 11px;
-            min-width: 550px;
+            min-width: 580px;
         }
         
         .scorecard-header {
-            background: #E8F5E9;
-            padding: 10px;
-            border-bottom: 2px solid #2E7D32;
-            font-weight: 700;
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            padding: 12px;
+            border-bottom: 3px solid #2E7D32;
+            font-weight: 800;
             color: #1B5E20;
         }
         
         .scorecard-row {
-            border-bottom: 1px solid #E0E0E0;
+            border-bottom: 2px solid #E0E0E0;
         }
         
         .scorecard-cell {
-            padding: 10px 6px;
+            padding: 12px 8px;
             text-align: center;
             background: white;
+            font-weight: 600;
         }
         
         .scorecard-cell:first-child {
-            font-weight: 700;
+            font-weight: 800;
             background: #F5F5F5;
+            color: #424242;
         }
         
         .scorecard-cell:last-child {
-            background: #2E7D32;
+            background: linear-gradient(135deg, #2E7D32, #1B5E20);
             color: white;
-            font-weight: 700;
+            font-weight: 800;
+            font-size: 13px;
         }
         
         .total-score {
             background: linear-gradient(135deg, #2E7D32, #1B5E20);
             color: white;
-            padding: 20px;
-            border-radius: 12px;
+            padding: 24px;
+            border-radius: 16px;
             text-align: center;
-            font-size: 18px;
-            font-weight: 700;
-            margin-top: 16px;
+            font-size: 20px;
+            font-weight: 800;
+            margin-top: 20px;
+            box-shadow: 0 6px 20px rgba(46,125,50,0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .records {
-            max-height: 400px;
+            max-height: 450px;
             overflow-y: auto;
         }
         
         .hole-record {
-            background: #F8F9FA;
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 10px;
-            border-left: 4px solid #2E7D32;
+            background: linear-gradient(135deg, #F8F9FA, #ECEFF1);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 14px;
+            border-left: 6px solid #2E7D32;
             transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         
         .hole-record:hover {
-            background: #E8F5E9;
-            transform: translateX(4px);
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            transform: translateX(6px);
+            box-shadow: 0 4px 16px rgba(46,125,50,0.2);
         }
         
         .hole-record-header {
-            font-weight: 700;
+            font-weight: 800;
             color: #1B5E20;
-            margin-bottom: 10px;
-            font-size: 15px;
+            margin-bottom: 12px;
+            font-size: 16px;
         }
         
         .shot-detail {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 6px;
-            padding: 6px 10px;
+            font-size: 13px;
+            color: #424242;
+            margin-bottom: 8px;
+            padding: 10px 12px;
             background: white;
-            border-radius: 6px;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
         }
         
-        .sg-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .baseline-section {
+            background: linear-gradient(135deg, #F8F9FA, #E8EAF6);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 2px solid #E0E0E0;
         }
         
-        .sg-card .stat-label,
-        .sg-card .stat-value {
-            color: white;
+        .baseline-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 2px solid #E0E0E0;
+            font-weight: 600;
+        }
+        
+        .baseline-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
@@ -731,10 +783,7 @@
         <div class="header">
             <button class="settings-btn" onclick="openSettings()">⚙️</button>
             <h1>⛳ ゴルフ統計Pro</h1>
-            <div class="mode-toggle">
-                <button class="mode-btn active" onclick="confirmModeChange('simple')" id="modeSimple">シンプル</button>
-                <button class="mode-btn" onclick="confirmModeChange('advanced')" id="modeAdvanced">アドバンスド</button>
-            </div>
+            <div class="subtitle">かんたん自己分析ツール</div>
         </div>
         
         <div class="content">
@@ -756,7 +805,7 @@
                 <div class="input-row">
                     <div class="input-group">
                         <label class="input-label">状況</label>
-                        <select id="situation">
+                        <select id="situation" onchange="updateDistanceUnit()">
                             <option value="ティーグラウンド">ティーグラウンド</option>
                             <option value="フェアウェイ">フェアウェイ</option>
                             <option value="ラフ">ラフ</option>
@@ -771,18 +820,24 @@
                 </div>
                 
                 <div class="input-group">
-                    <label class="input-label" id="distanceLabel">飛距離 (yd)</label>
-                    <input type="number" id="distanceBefore" placeholder="200" min="0" step="0.1">
-                    <div class="help-text" id="distanceHelp">打った距離を入力</div>
+                    <label class="input-label">打つ前の残距離</label>
+                    <div class="distance-input-group">
+                        <input type="number" id="distanceBefore" placeholder="150" min="0" step="0.1">
+                        <span class="unit-badge" id="unitBadgeBefore">yd</span>
+                    </div>
+                    <div class="help-text">グリーン上の場合はメートルで入力</div>
                 </div>
                 
-                <div class="input-group advanced-only" id="distanceAfterGroup">
-                    <label class="input-label">打った後の残距離 (yd/m)</label>
-                    <input type="number" id="distanceAfter" placeholder="5" min="0" step="0.1">
+                <div class="input-group">
+                    <label class="input-label">打った後の残距離</label>
+                    <div class="distance-input-group">
+                        <input type="number" id="distanceAfter" placeholder="5" min="0" step="0.1">
+                        <span class="unit-badge" id="unitBadgeAfter">yd</span>
+                    </div>
                     <div class="help-text">カップインした場合は0、グリーン上ならメートルで入力</div>
                 </div>
                 
-                <div class="input-group advanced-only" id="slopeGroup">
+                <div class="input-group">
                     <label class="input-label">傾斜</label>
                     <select id="slope">
                         <option value="平坦">平坦</option>
@@ -793,7 +848,7 @@
                     </select>
                 </div>
                 
-                <div class="input-group advanced-only" id="greenConditionGroup">
+                <div class="input-group">
                     <label class="input-label">芝の状態</label>
                     <select id="greenCondition">
                         <option value="良好">良好</option>
@@ -803,18 +858,20 @@
                     </select>
                 </div>
                 
-                <div class="input-group advanced-only" id="windGroup">
+                <div class="input-group">
                     <label class="input-label">風向き</label>
-                    <select id="wind">
-                        <option value="無風">無風</option>
-                        <option value="フォロー弱">フォロー（弱）</option>
-                        <option value="フォロー強">フォロー（強）</option>
-                        <option value="アゲインスト弱">アゲインスト（弱）</option>
-                        <option value="アゲインスト中">アゲインスト（中）</option>
-                        <option value="アゲインスト強">アゲインスト（強）</option>
-                        <option value="横風弱">横風（弱）</option>
-                        <option value="横風強">横風（強）</option>
-                    </select>
+<select id="wind">
+  <option value="無風">無風</option>
+  <option value="フォロー弱">フォロー（弱）</option>
+  <option value="フォロー中">フォロー（中）</option>
+  <option value="フォロー強">フォロー（強）</option>
+  <option value="アゲインスト弱">アゲインスト（弱）</option>
+  <option value="アゲインスト中">アゲインスト（中）</option>
+  <option value="アゲインスト強">アゲインスト（強）</option>
+  <option value="横風弱">横風（弱）</option>
+  <option value="横風強">横風（強）</option>
+</select>
+
                 </div>
                 
                 <div class="input-group">
@@ -831,16 +888,15 @@
             <div class="current-shots" id="currentShots" style="display: none;"></div>
             
             <div class="action-btns">
-                <button type="button" class="add-shot-btn" onclick="addShot()">➕ 打を追加</button>
-                <button type="button" class="finish-hole-btn" onclick="finishHole()">✓ ホール終了</button>
-                <button type="button" style="padding: 16px; background: linear-gradient(135deg, #FF9800, #F57C00); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s;" onclick="finishRound()" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(255,152,0,0.3)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">🏁 ラウンド終了</button>
+                <button type="button" class="btn add-shot-btn" onclick="addShot()">➕ 打を追加</button>
+                <button type="button" class="btn finish-hole-btn" onclick="finishHole()">✓ ホール終了</button>
             </div>
             
             <div class="tabs">
                 <button type="button" class="tab active" onclick="switchTab('scorecard')">スコア表</button>
                 <button type="button" class="tab" onclick="switchTab('stats')">統計</button>
                 <button type="button" class="tab" onclick="switchTab('graphs')">グラフ</button>
-                <button type="button" class="tab advanced-only" onclick="switchTab('sg')" id="sgTabBtn">SG分析</button>
+                <button type="button" class="tab" onclick="switchTab('sg')">SG分析</button>
                 <button type="button" class="tab" onclick="switchTab('records')">詳細</button>
             </div>
             
@@ -886,7 +942,7 @@
                 </div>
                 
                 <div class="section-title">⚠️ ミス傾向</div>
-                <div id="missStats" style="background: #F5F5F5; padding: 12px; border-radius: 8px; font-size: 13px; color: #666;"></div>
+                <div id="missStats" style="background: linear-gradient(135deg, #FFEBEE, #FFCDD2); padding: 16px; border-radius: 12px; font-size: 14px; color: #424242; font-weight: 600; border: 2px solid #EF5350;"></div>
             </div>
             
             <div id="graphsTab" class="tab-content">
@@ -944,10 +1000,10 @@
                     <div class="stat-label">vs 自分の平均</div>
                     <div class="stat-value" id="sgVsBaseline">-</div>
                 </div>
-                <div class="help-text" style="text-align: center; margin-top: 8px;">10ラウンド以上で有効</div>
+                <div class="help-text" style="text-align: center; margin-top: 8px;">10ホール以上で有効</div>
                 
                 <div class="section-title">🎯 番手別SG分析</div>
-                <div id="clubSGStats" style="background: #F5F5F5; padding: 12px; border-radius: 8px; font-size: 13px; color: #666;">
+                <div id="clubSGStats" style="background: linear-gradient(135deg, #F5F7FA, #E8EAF6); padding: 16px; border-radius: 12px; font-size: 14px; color: #424242; border: 2px solid #E0E0E0;">
                     データを追加してください
                 </div>
             </div>
@@ -963,7 +1019,7 @@
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">設定</div>
+                <div class="modal-title">⚙️ 設定</div>
                 <button class="close-modal-btn" onclick="closeSettings()">閉じる</button>
             </div>
             
@@ -979,20 +1035,7 @@
                 <div id="baselineDisplay"></div>
             </div>
             <button class="reset-baseline-btn" onclick="resetBaseline()">ベースラインをリセット</button>
-            <div class="help-text">10ラウンド以上でベースラインが自動生成されます</div>
-        </div>
-    </div>
-    
-    <div class="modal" id="modeConfirmModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">確認</div>
-            </div>
-            <div style="margin-bottom: 20px; color: #666;" id="modeConfirmText"></div>
-            <div style="display: flex; gap: 10px;">
-                <button style="flex: 1; padding: 12px; background: #E0E0E0; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;" onclick="closeModeConfirm()">いいえ</button>
-                <button style="flex: 1; padding: 12px; background: #2E7D32; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;" onclick="executeModeChange()">はい</button>
-            </div>
+            <div class="help-text">10ホール以上でベースラインが自動生成されます</div>
         </div>
     </div>
     
@@ -1023,8 +1066,6 @@
         let currentHole = 1;
         let currentShots = [];
         let selectedResult = null;
-        let appMode = 'simple';
-        let pendingMode = null;
         let customClubs = [];
         let personalBaseline = null;
         let scoreChart = null;
@@ -1033,18 +1074,17 @@
         function init() {
             loadData();
             updateClubSelect();
-            updateModeUI();
             updateDisplay();
             calculateBaseline();
+            updateDistanceUnit();
         }
         
         function loadData() {
-            const saved = localStorage.getItem('golfStatsData');
+            const saved = localStorage.getItem('golfStatsDataV2');
             if (saved) {
                 const data = JSON.parse(saved);
                 holes = data.holes || [];
                 customClubs = data.clubs || [...DEFAULT_CLUBS];
-                appMode = data.mode || 'simple';
                 personalBaseline = data.baseline || null;
             } else {
                 customClubs = [...DEFAULT_CLUBS];
@@ -1052,8 +1092,8 @@
         }
         
         function saveData() {
-            localStorage.setItem('golfStatsData', JSON.stringify({
-                holes, clubs: customClubs, mode: appMode, baseline: personalBaseline
+            localStorage.setItem('golfStatsDataV2', JSON.stringify({
+                holes, clubs: customClubs, baseline: personalBaseline
             }));
         }
         
@@ -1062,58 +1102,24 @@
             select.innerHTML = customClubs.map(c => `<option value="${c}">${c}</option>`).join('');
         }
         
-        function updateModeUI() {
-            document.getElementById('modeSimple').classList.toggle('active', appMode === 'simple');
-            document.getElementById('modeAdvanced').classList.toggle('active', appMode === 'advanced');
+        function updateDistanceUnit() {
+            const situation = document.getElementById('situation').value;
+            const isGreen = situation === 'グリーン';
+            const beforeInput = document.getElementById('distanceBefore');
+            const clubSelect = document.getElementById('club'); 
             
-            document.querySelectorAll('.advanced-only').forEach(el => {
-                el.classList.toggle('show', appMode === 'advanced');
-            });
-            
-            const distLabel = document.getElementById('distanceLabel');
-            const distHelp = document.getElementById('distanceHelp');
-            const distInput = document.getElementById('distanceBefore');
-            
-            if (appMode === 'simple') {
-                distLabel.textContent = '飛距離 (yd)';
-                distHelp.textContent = '打った距離を入力';
-                distInput.placeholder = '200';
-            } else {
-                distLabel.textContent = '打つ前の残距離 (yd)';
-                distHelp.textContent = 'グリーン上の場合はメートルで入力';
-                distInput.placeholder = '150';
-            }
+            document.getElementById('unitBadgeBefore').textContent = isGreen ? 'm' : 'yd';
+            document.getElementById('unitBadgeAfter').textContent = isGreen ? 'm' : 'yd';
+
+        if (situation === 'グリーン') {
+    beforeInput.value = '';
+    beforeInput.focus(); // 自動でカーソル移動
+           if (clubSelect) {
+            clubSelect.value = 'PT';
+           }
         }
-        
-        function confirmModeChange(newMode) {
-            if (appMode === newMode) return;
-            
-            if (currentShots.length > 0 || holes.length > 0) {
-                pendingMode = newMode;
-                const text = newMode === 'advanced' 
-                    ? 'アドバンスドモードに切り替えますか？入力データは保持されますが、SG計算には新しいデータが必要です。'
-                    : 'シンプルモードに切り替えますか？SG分析機能が無効になります。';
-                document.getElementById('modeConfirmText').textContent = text;
-                document.getElementById('modeConfirmModal').classList.add('active');
-            } else {
-                appMode = newMode;
-                updateModeUI();
-                saveData();
-            }
-        }
-        
-        function closeModeConfirm() {
-            document.getElementById('modeConfirmModal').classList.remove('active');
-            pendingMode = null;
-        }
-        
-        function executeModeChange() {
-            appMode = pendingMode;
-            updateModeUI();
-            updateDisplay();
-            saveData();
-            closeModeConfirm();
-        }
+
+    }
         
         function openSettings() {
             document.getElementById('settingsModal').classList.add('active');
@@ -1129,7 +1135,7 @@
             const list = document.getElementById('clubList');
             list.innerHTML = customClubs.map((club, i) => `
                 <div class="club-item">
-                    <span style="font-weight: 600;">${club}</span>
+                    <span style="font-weight: 700;">${club}</span>
                     <button class="remove-club-btn" onclick="removeClub(${i})">削除</button>
                 </div>
             `).join('');
@@ -1163,7 +1169,7 @@
             const categories = { OTT: [], APP: [], ARG: [], PUT: [] };
             
             allShots.forEach(shot => {
-                if (!shot.distanceAfter && shot.distanceAfter !== 0) return;
+                if (shot.distanceAfter === null && shot.distanceAfter !== 0) return;
                 const cat = getSGCategory(shot.shotNumber, shot.holePar || 4, shot.distanceBefore, shot.situation);
                 const sg = calculateSG(shot.distanceBefore, shot.distanceAfter, shot.situation, 
                     shot.afterLie || 'グリーン', shot.wind || '無風', shot.slope || '平坦', shot.greenCondition || '普通');
@@ -1183,7 +1189,7 @@
         function displayBaseline() {
             const display = document.getElementById('baselineDisplay');
             if (!personalBaseline || holes.length < 10) {
-                display.innerHTML = '<div style="color: #999; text-align: center; padding: 20px;">データ不足（10ラウンド以上必要）</div>';
+                display.innerHTML = '<div style="color: #9E9E9E; text-align: center; padding: 24px;">データ不足（10ホール以上必要）</div>';
                 return;
             }
             
@@ -1192,7 +1198,7 @@
                 const val = personalBaseline[cat].toFixed(3);
                 const sign = personalBaseline[cat] >= 0 ? '+' : '';
                 const color = personalBaseline[cat] >= 0 ? '#2E7D32' : '#D32F2F';
-                html += `<div class="baseline-item"><span>${cat}</span><span style="font-weight: 700; color: ${color};">${sign}${val}</span></div>`;
+                html += `<div class="baseline-item"><span style="font-weight: 700;">${cat}</span><span style="font-weight: 800; color: ${color}; font-size: 16px;">${sign}${val}</span></div>`;
             });
             display.innerHTML = html;
         }
@@ -1288,27 +1294,18 @@
             const situation = document.getElementById('situation').value;
             const club = document.getElementById('club').value;
             const distanceBefore = parseFloat(document.getElementById('distanceBefore').value);
-            const wind = appMode === 'advanced' ? document.getElementById('wind').value : '無風';
-            const slope = appMode === 'advanced' ? document.getElementById('slope').value : '平坦';
-            const greenCondition = appMode === 'advanced' ? document.getElementById('greenCondition').value : '普通';
+            const distanceAfterInput = document.getElementById('distanceAfter').value;
+            const wind = document.getElementById('wind').value;
+            const slope = document.getElementById('slope').value;
+            const greenCondition = document.getElementById('greenCondition').value;
             
-            if (!distanceBefore || !selectedResult) {
-                alert('距離と結果を入力してください');
+            if (!distanceBefore || !selectedResult || distanceAfterInput === '') {
+                alert('全ての項目を入力してください');
                 return;
             }
             
-            let distanceAfter = null;
-            let afterLie = null;
-            
-            if (appMode === 'advanced') {
-                const afterInput = document.getElementById('distanceAfter').value;
-                if (afterInput === '') {
-                    alert('打った後の残距離を入力してください（カップインの場合は0）');
-                    return;
-                }
-                distanceAfter = parseFloat(afterInput);
-                afterLie = distanceAfter > 0 ? predictNextSituation() : 'グリーン';
-            }
+            const distanceAfter = parseFloat(distanceAfterInput);
+            const afterLie = distanceAfter > 0 ? predictNextSituation() : 'グリーン';
             
             currentShots.push({
                 shotNumber: currentShots.length + 1,
@@ -1325,21 +1322,19 @@
             });
             
             document.getElementById('distanceBefore').value = '';
-            if (appMode === 'advanced') {
-                document.getElementById('distanceAfter').value = '';
-                
-                // 次の打の「打つ前の残距離」に自動反映
-                if (distanceAfter !== null && distanceAfter > 0) {
-                    setTimeout(() => {
-                        document.getElementById('distanceBefore').value = distanceAfter;
-                    }, 100);
-                }
-            }
+            document.getElementById('distanceAfter').value = '';
             document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
             selectedResult = null;
             
             const nextSituation = predictNextSituation();
             document.getElementById('situation').value = nextSituation;
+            updateDistanceUnit();
+            
+            if (distanceAfter !== null && distanceAfter > 0) {
+                setTimeout(() => {
+                    document.getElementById('distanceBefore').value = distanceAfter;
+                }, 100);
+            }
             
             updateCurrentShots();
             document.getElementById('shotCount').textContent = currentShots.length + 1;
@@ -1355,11 +1350,9 @@
             container.style.display = 'block';
             container.innerHTML = currentShots.map(s => {
                 const beforeLabel = s.situation === 'グリーン' ? 'm' : 'yd';
-                const afterLabel = s.afterLie === 'グリーン' ? 'm' : 'yd';
+                const afterLabel = s.situation === 'グリーン' ? 'm' : 'yd';
                 let distText = `${s.distanceBefore}${beforeLabel}`;
-                if (s.distanceAfter !== null) {
-                    distText += ` → ${s.distanceAfter === 0 ? 'カップイン' : s.distanceAfter + afterLabel}`;
-                }
+                distText += ` → ${s.distanceAfter === 0 ? 'カップイン' : s.distanceAfter + afterLabel}`;
                 return `<div class="shot-item">${s.shotNumber}打目: ${s.situation} → ${s.club} (${distText}) → ${s.result}</div>`;
             }).join('');
         }
@@ -1390,12 +1383,11 @@
             document.getElementById('situation').value = 'ティーグラウンド';
             document.getElementById('holePar').value = '4';
             document.getElementById('distanceBefore').value = '';
-            if (appMode === 'advanced') {
-                document.getElementById('distanceAfter').value = '';
-            }
+            document.getElementById('distanceAfter').value = '';
             document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
             selectedResult = null;
             
+            updateDistanceUnit();
             updateCurrentShots();
             updateDisplay();
             calculateBaseline();
@@ -1423,39 +1415,33 @@
                 return;
             }
             
-            if (!confirm('ラウンドを終了しますか？スコア表と詳細がリセットされますが、統計データは保持されます。')) {
+            if (!confirm('ラウンドを終了しますか？現在のラウンドのスコア表示がクリアされますが、統計データは保持されます。')) {
                 return;
             }
             
-            // 現在のラウンドデータを統計用に保存（holesはそのまま統計計算に使われる）
-            // スコア表示用のデータのみクリア
             currentShots = [];
             currentHole = 1;
             selectedResult = null;
             
-            // UIをリセット
             document.getElementById('currentHole').textContent = 1;
             document.getElementById('shotCount').textContent = 1;
             document.getElementById('situation').value = 'ティーグラウンド';
             document.getElementById('holePar').value = '4';
             document.getElementById('distanceBefore').value = '';
-            if (appMode === 'advanced') {
-                document.getElementById('distanceAfter').value = '';
-            }
+            document.getElementById('distanceAfter').value = '';
             document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
             
-            // スコアカードと詳細タブの表示のみクリア
+            updateDistanceUnit();
             updateCurrentShots();
+            
+            // スコアカードと詳細タブのみクリア
             document.getElementById('scorecardContainer').innerHTML = '<div class="empty-message">新しいラウンドを開始してください</div>';
             document.getElementById('records').innerHTML = '<div class="empty-message">新しいラウンドを開始してください</div>';
             
-            // 統計、グラフ、SGは保持（holesデータは統計用に残す）
-            // ベースラインも再計算して保持
+            // 統計、グラフ、SGは保持
             calculateBaseline();
             updateStats();
-            if (appMode === 'advanced') {
-                updateSGStats();
-            }
+            updateSGStats();
             
             saveData();
             
@@ -1468,18 +1454,26 @@
                 currentShots = [];
                 currentHole = 1;
                 selectedResult = null;
-                personalBaseline = null;
+                
+                // グラフをクリア
+                if (scoreChart) {
+                    scoreChart.destroy();
+                    scoreChart = null;
+                }
+                if (distChart) {
+                    distChart.destroy();
+                    distChart = null;
+                }
                 
                 document.getElementById('currentHole').textContent = 1;
                 document.getElementById('shotCount').textContent = 1;
                 document.getElementById('situation').value = 'ティーグラウンド';
                 document.getElementById('holePar').value = '4';
                 document.getElementById('distanceBefore').value = '';
-                if (appMode === 'advanced') {
-                    document.getElementById('distanceAfter').value = '';
-                }
+                document.getElementById('distanceAfter').value = '';
                 document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('active'));
                 
+                updateDistanceUnit();
                 updateCurrentShots();
                 updateDisplay();
                 saveData();
@@ -1490,9 +1484,7 @@
             updateScorecard();
             updateStats();
             updateRecords();
-            if (appMode === 'advanced') {
-                updateSGStats();
-            }
+            updateSGStats();
         }
         
         function updateScorecard() {
@@ -1544,7 +1536,7 @@
                         <div class="scorecard-cell">${frontPuttTotal || '-'}</div>
                     </div>
                 </div>
-                <div class="scorecard" style="margin-top: 12px;">
+                <div class="scorecard" style="margin-top: 16px;">
                     <div class="scorecard-header">
                         <div class="scorecard-cell">HOLE</div>
                         ${Array.from({length: 9}, (_, i) => `<div class="scorecard-cell">${i + 10}</div>`).join('')}
@@ -1634,7 +1626,7 @@
             
             const clubDistances = {};
             allShots.forEach(s => {
-                if (s.club !== 'PT' && s.distanceBefore) {
+                if (s.club !== 'PT' && s.distanceBefore && s.situation !== 'グリーン') {
                     if (!clubDistances[s.club]) clubDistances[s.club] = [];
                     clubDistances[s.club].push(s.distanceBefore);
                 }
@@ -1658,7 +1650,7 @@
         }
         
         function updateSGStats() {
-            if (holes.length === 0 || appMode !== 'advanced') {
+            if (holes.length === 0) {
                 document.getElementById('sgTotal').textContent = '-';
                 document.getElementById('sgT2G').textContent = '-';
                 document.getElementById('sgOTT').textContent = '-';
@@ -1726,41 +1718,48 @@
                 const color = parseFloat(avg) >= 0 ? '#2E7D32' : '#D32F2F';
                 const sign = parseFloat(avg) >= 0 ? '+' : '';
                 clubSGHTML += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #E0E0E0;">
-                        <span style="font-weight: 600;">${club}</span>
-                        <span style="color: ${color}; font-weight: 700;">${sign}${avg}</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 2px solid #E0E0E0;">
+                        <span style="font-weight: 700; font-size: 15px;">${club}</span>
+                        <span style="color: ${color}; font-weight: 800; font-size: 16px;">${sign}${avg}</span>
                     </div>
                 `;
             });
             document.getElementById('clubSGStats').innerHTML = clubSGHTML || 'データなし';
         }
         
-        function updateRecords() {
-            const recordsDiv = document.getElementById('records');
-            
-            if (holes.length === 0) {
-                recordsDiv.innerHTML = '<div class="empty-message">データがありません</div>';
-            } else {
-                recordsDiv.innerHTML = holes.map(h => `
-                    <div class="hole-record">
-                        <div class="hole-record-header">ホール ${h.hole} - Par${h.par} - ${h.score}打 (パット${h.putts})</div>
-                        ${h.shots.map(s => {
-                            const beforeLabel = s.situation === 'グリーン' ? 'm' : 'yd';
-                            const afterLabel = s.afterLie === 'グリーン' ? 'm' : 'yd';
-                            let distText = `${s.distanceBefore}${beforeLabel}`;
-                            if (s.distanceAfter !== null) {
-                                distText += ` → ${s.distanceAfter === 0 ? 'カップイン' : s.distanceAfter + afterLabel}`;
-                            }
-                            return `
-                                <div class="shot-detail">
-                                    ${s.shotNumber}打目: ${s.situation} → ${s.club} (${distText}) → ${s.result}
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `).join('');
-            }
-        }
+ function updateRecords() {
+    const recordsDiv = document.getElementById('records');
+
+    if (holes.length === 0) {
+        recordsDiv.innerHTML = '<div class="empty-message">データがありません</div>';
+    } else {
+        recordsDiv.innerHTML = holes.map(h => `
+            <div class="hole-record">
+                <div class="hole-record-header">ホール ${h.hole} - Par${h.par} - ${h.score}打 (パット${h.putts})</div>
+                ${h.shots.map(s => {
+                    // グリーンのときだけ単位を m に、それ以外は yd に
+                    const unit = s.situation === 'グリーン' ? 'm' : 'yd';
+
+                    // カップイン処理を含む距離テキスト
+                    const distText = s.distanceAfter === 0
+                        ? `${s.distanceBefore}${unit} → カップイン`
+                        : `${s.distanceBefore}${unit} → ${s.distanceAfter}${unit}`;
+
+                    return `
+                        <div class="shot-detail">
+                            ${s.shotNumber}打目: ${s.situation} → ${s.club} (${distText}) → ${s.result}
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `).join('');
+    }
+}
+
+
+
+
+        
         
         function updateCharts() {
             if (holes.length === 0) return;
@@ -1776,16 +1775,36 @@
                         label: 'スコア',
                         data: holes.map(h => h.score),
                         borderColor: '#2E7D32',
-                        backgroundColor: 'rgba(46,125,50,0.1)',
+                        backgroundColor: 'rgba(46,125,50,0.15)',
                         tension: 0.4,
-                        fill: true
+                        fill: true,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#1B5E20',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { display: false } },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(27,94,32,0.9)',
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            padding: 12,
+                            cornerRadius: 8
+                        }
+                    },
                     scales: {
-                        y: { beginAtZero: false }
+                        y: { 
+                            beginAtZero: false,
+                            ticks: { font: { weight: '600' } }
+                        },
+                        x: {
+                            ticks: { font: { weight: '600' } }
+                        }
                     }
                 }
             });
@@ -1808,13 +1827,28 @@
                     labels: Object.keys(scoreDist),
                     datasets: [{
                         data: Object.values(scoreDist),
-                        backgroundColor: ['#4CAF50', '#8BC34A', '#FFC107', '#FF5722']
+                        backgroundColor: ['#4CAF50', '#8BC34A', '#FFC107', '#FF5722'],
+                        borderWidth: 3,
+                        borderColor: '#fff'
                     }]
                 },
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: { position: 'bottom' }
+                        legend: { 
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 12, weight: '600' },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(27,94,32,0.9)',
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            padding: 12,
+                            cornerRadius: 8
+                        }
                     }
                 }
             });
@@ -1823,7 +1857,7 @@
         function updateHeatmap() {
             const heatmap = document.getElementById('heatmap');
             if (holes.length === 0) {
-                heatmap.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999;">データなし</div>';
+                heatmap.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #9E9E9E; font-weight: 600;">データなし</div>';
                 return;
             }
             
@@ -1848,9 +1882,9 @@
                 
                 html += `
                     <div class="heatmap-cell" style="background: ${color}; color: ${textColor};">
-                        <div style="font-size: 9px;">${range.label}yd</div>
-                        <div style="font-size: 16px; font-weight: 700;">${(rate * 100).toFixed(0)}%</div>
-                        <div style="font-size: 8px;">${shots.length}打</div>
+                        <div style="font-size: 10px; font-weight: 700;">${range.label}yd</div>
+                        <div style="font-size: 20px; font-weight: 800;">${(rate * 100).toFixed(0)}%</div>
+                        <div style="font-size: 9px; font-weight: 700;">${shots.length}打</div>
                     </div>
                 `;
             });
